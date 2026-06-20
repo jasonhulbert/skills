@@ -10,7 +10,7 @@ Create a multi-plan implementation artifact for very large tasks that do not fit
 This skill sits above the pipeline:
 `plan-multi` -> (`plan-create` per child) -> (`plan-phase` -> `plan-reflect` per phase)
 
-**Read the plan file contract first:** `/Users/HulbertJ/.claude/skills/plan-shared/PLAN-CONTRACT.md` defines the parent-index format and status values, the child filename convention (`<NN>-<child-slug>.md`, zero-padded), the child frontmatter block (written **with** `---` fences), and the index line-matching grammar that `plan-phase`/`plan-reflect` rely on to keep statuses in sync. The rules below assume that contract. If anything here seems to disagree, the contract wins.
+**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines the parent-index format and status values, the child filename convention (`<NN>-<child-slug>.md`, zero-padded), the child frontmatter block (written **with** `---` fences), and the index line-matching grammar that `plan-phase`/`plan-reflect` rely on to keep statuses in sync. The rules below assume that contract. If anything here seems to disagree, the contract wins.
 
 ## When to Use
 
@@ -35,7 +35,6 @@ Use, in this order:
 - Do not implement code.
 - Do not write any child plans before the user approves the breakdown.
 - Do not use plan-multi for work that fits in a single phased plan.
-- Storage is the Obsidian vault. Use the `obsidian` CLI for all reads/writes.
 - Each child plan must be fully self-contained — copy the global goal and relevant constraints into each child.
 - **Deliverables must be collectively exhaustive and mutually exclusive:** every part of the global goal belongs to exactly one child, and no two children own the same file/module/migration. State this coverage mapping in the draft so the user can spot gaps and overlaps before approval.
 - Validate the `depends_on` graph for cycles before writing anything.
@@ -72,9 +71,6 @@ Present the draft to the user and wait for approval or edits. Do not generate ch
 
 ### 5. Resolve paths
 
-- Get the vault root: `obsidian vault info=path`
-- Parent directory (relative to vault): `plans/<YYYY-MM-DD>-<parent-slug>/`
-- Check whether it exists: `obsidian folder path="plans/<YYYY-MM-DD>-<parent-slug>"`. If it exists, do not overwrite — list its contents, report which children are already present, and ask the user whether to complete the missing children or edit manually.
 - Assign each child its number `<NN>` from its 1-based position in topological order, zero-padded to two digits (`01`, `02`, …). The `<NN>-<child-slug>` token is identical in the filename, the index link, and the dependency graph (contract §1, §4).
 
 ### 6. Validate the dependency graph
@@ -88,7 +84,7 @@ Write the index **before** generating children, with every child's status
 `pending`. The index is then the manifest a partial run can recover from: if
 child generation fails partway, the index already lists what should exist.
 
-Write `<vault>/plans/<YYYY-MM-DD>-<parent-slug>/index.md` via `obsidian create path="plans/<YYYY-MM-DD>-<parent-slug>/index.md" content="..."` using the format below, initializing every plan's status as `pending`.
+Write `<YYYY-MM-DD>-<parent-slug>/index.md` using the format below, initializing every plan's status as `pending`.
 
 ### 8. Generate each child via plan-create
 
@@ -101,7 +97,7 @@ For each child, invoke `plan-create` with a brief containing:
 - `child_goal` — becomes the plan's Goal
 - `child_constraints` — child-specific constraints plus a copy of global constraints
 - `depends_on` — list of sibling bare slugs
-- `output_path` — exact path: `plans/<YYYY-MM-DD>-<parent-slug>/<NN>-<child-slug>.md`
+- `output_path` — exact path (e.g. `plans/<YYYY-MM-DD>-<parent-slug>/<NN>-<child-slug>.md`)
 - `child_frontmatter` — written **with** its `---` fences (an unfenced block produces invalid frontmatter and silently breaks index sync):
   ```yaml
   ---
@@ -131,12 +127,8 @@ If generation fails on a child, stop and report which children were written and 
 - [Cross-cutting assumptions]
 
 ## Plan Dependency Graph
-​```mermaid
-graph LR
-  foo --> bar
-  bar --> baz
-  bar --> qux
-​```
+
+[Mermaid plan dependency graph]
 
 ## Plans
 1. [Plan 1 Name](01-plan-slug.md) — pending

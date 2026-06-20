@@ -10,7 +10,7 @@ Review a just-executed phase and update the saved plan based on what actually ha
 This is the verification step of the pipeline:
 `plan-create` -> `plan-phase` -> `plan-reflect`
 
-**Read the plan file contract first:** `/Users/HulbertJ/.claude/skills/plan-shared/PLAN-CONTRACT.md` defines the phase `Status:` values, the fact that you are the only writer of `complete`/`blocked` and of `Remaining:`/`Blocked on:` notes, and the parent-index rules. The rules below assume that contract. If anything here seems to disagree, the contract wins.
+**Read the plan file contract first:** `.../plan-shared/PLAN-CONTRACT.md` defines the phase `Status:` values, the fact that you are the only writer of `complete`/`blocked` and of `Remaining:`/`Blocked on:` notes, and the parent-index rules. The rules below assume that contract. If anything here seems to disagree, the contract wins.
 
 The goal is not ceremony. You are the checkpoint that catches drift between the plan and reality, so **verify against the repo — never rubber-stamp the phase's self-report** — and record the true state before the next phase starts.
 
@@ -86,9 +86,9 @@ Only if the plan file has `parent_plan` frontmatter:
 To update:
 
 - Resolve the parent index path relative to the child plan file (typically `./index.md` in the same directory).
-- Read the parent index (`obsidian read path="..."`).
+- Read the parent index.
 - In the `## Plans` list, locate this child's line and update its trailing status word, following the contract's line-matching grammar (match by link target, replace the trailing token).
-- Write the updated index (`obsidian create path="..." content="..." overwrite`).
+- Write the updated index.
 
 If there is no `parent_plan` frontmatter, skip this step.
 

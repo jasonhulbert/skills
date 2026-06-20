@@ -12,37 +12,28 @@ fix the skill.
 
 ## 1. Where plans live
 
+### Resolved plan directory
+
+- Resolve the directory path indicated by (or clearly inferred from) user-provided
+  context. If not indicated or inferred, look for an existing workspace root
+  `plans/` directory; create `plans/` if doesn't exist.
+
 ### Standalone plan (created by `plan-create` on its own)
 
-- Path: `plans/<YYYY-MM-DD>-<slug>.md` where the date is today and `<slug>` is a
-  kebab-case slug derived from the goal (e.g. `plans/2026-05-29-auth-refactor.md`).
-- Use an existing repo `plans/` directory if one exists; otherwise create `plans/`
-  at the repo root.
+- Filename: `<resolved-dir>/<YYYY-MM-DD>-<slug>.md` where the date is today and `<slug>` is a
+  kebab-case slug derived from the goal (e.g. `2026-05-29-auth-refactor.md`).
 - If a file with that exact name already exists, append `-2`, `-3`, … — never
   overwrite.
-- No frontmatter.
 
 ### Multi-plan artifact (created by `plan-multi`)
 
-- Parent directory: `plans/<YYYY-MM-DD>-<parent-slug>/`
+- Parent directory: `<resolved-dir>/<YYYY-MM-DD>-<parent-slug>/`
 - Parent index: `<parent-dir>/index.md`
 - Each child plan: `<parent-dir>/<NN>-<child-slug>.md`, where `<NN>` is the
   1-based position in topological order, **zero-padded to two digits** (`01`,
   `02`, …). The `<NN>-<child-slug>` token is identical in the filename, the index
   link, and the dependency graph.
 - Every child plan carries the frontmatter block in §2.
-
-### Storage backend (which tools to read/write with)
-
-Decided by the file path, not by the skill:
-
-- If the plan file (or parent index) path is **inside the Obsidian vault**, use
-  the `obsidian` CLI for every read and write of that file.
-- Otherwise use ordinary file tools.
-
-`plan-multi` always writes to the vault, so its children and index are always
-edited via the `obsidian` CLI. A standalone `plan-create` plan is a repo file
-edited with ordinary tools unless the repo itself lives inside the vault.
 
 ---
 
@@ -68,38 +59,49 @@ Body structure (identical for standalone and child plans):
 # [Project or Feature Name]
 
 ## Goal
+
 - [What is being built or changed]
 
 ## Constraints
+
 - [Technical, product, compliance, migration, timeline, or compatibility constraints]
 
 ## Assumptions
+
 - [Only assumptions you are actively relying on]
 
 ## Phase 1: [Name]
+
 - Status: pending
 - Objective: [What this phase accomplishes]
 
 ### Deliverables:
+
 - [Concrete, checkable output]
 
 ### Dependencies:
+
 - [Phase <N> | sibling <slug> | "none"]
 
 ### Validation:
+
 - [A runnable check or observable result — see §3]
 
 ### Notes:
+
 - [Optional: only if needed for safe execution]
 
 ### Delegation Notes:
+
 - [Optional: what is safe to parallelize, what stays local, ownership boundaries]
 
 ## Phase 2: [Name]
+
 - Status: pending
 - Objective: ...
 
 ## Open Questions
+
 - [Only unresolved items that still matter. Omit the section if there are none.]
 ```
 
@@ -131,24 +133,24 @@ Every phase has **exactly one** status line:
 
 There is no checkbox. The only legal values are, lowercase and hyphenated:
 
-| Value | Meaning |
-|---|---|
-| `pending` | Not started. |
-| `in-progress` | Started but not yet verified complete. May carry a `- Remaining:` bullet listing what is left (this is how *partial* work is recorded). |
-| `complete` | `plan-reflect` verified it: objective met, every deliverable present in the repo, and every `Validation:` criterion re-run and passed. |
-| `blocked` | Cannot proceed without a user decision or external prerequisite. Carries a `- Blocked on:` bullet naming what is needed. |
+| Value         | Meaning                                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pending`     | Not started.                                                                                                                            |
+| `in-progress` | Started but not yet verified complete. May carry a `- Remaining:` bullet listing what is left (this is how _partial_ work is recorded). |
+| `complete`    | `plan-reflect` verified it: objective met, every deliverable present in the repo, and every `Validation:` criterion re-run and passed.  |
+| `blocked`     | Cannot proceed without a user decision or external prerequisite. Carries a `- Blocked on:` bullet naming what is needed.                |
 
 **Only `complete` counts as done.** For every resume/stop decision, treat
 `pending`, `in-progress`, and `blocked` all as "not done."
 
 ### Who sets which transition (single, non-overlapping ownership)
 
-| Transition | Owner | When |
-|---|---|---|
-| `pending → in-progress` | `plan-phase` | The moment it begins the phase. This start-marker write is the **only** edit `plan-phase` makes to the plan body. |
-| `in-progress → complete` | `plan-reflect` | Only when verification earns it. |
-| `in-progress → blocked` | `plan-reflect` | When the phase cannot finish without outside input. Adds a `- Blocked on:` bullet. |
-| add/update `- Remaining:` | `plan-reflect` | When a phase is partially done; it stays `in-progress`. |
+| Transition                | Owner          | When                                                                                                              |
+| ------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `pending → in-progress`   | `plan-phase`   | The moment it begins the phase. This start-marker write is the **only** edit `plan-phase` makes to the plan body. |
+| `in-progress → complete`  | `plan-reflect` | Only when verification earns it.                                                                                  |
+| `in-progress → blocked`   | `plan-reflect` | When the phase cannot finish without outside input. Adds a `- Blocked on:` bullet.                                |
+| add/update `- Remaining:` | `plan-reflect` | When a phase is partially done; it stays `in-progress`.                                                           |
 
 `plan-reflect` never sets a phase back to `pending`. No skill writes any status
 value not in the table above.
@@ -163,6 +165,7 @@ on:` bullets.
 
 ```md
 ## Phase 3: API Integration
+
 - Status: in-progress
 - Remaining:
   - Retry/backoff on the upstream call is not yet implemented.
@@ -171,6 +174,7 @@ on:` bullets.
 
 ```md
 ## Phase 4: Rollout
+
 - Status: blocked
 - Blocked on:
   - Need product decision on the default feature-flag state.
@@ -184,19 +188,23 @@ on:` bullets.
 The index lists every child with its status. Format (outer fence shown with
 tildes only so the inner Mermaid fence is readable):
 
-~~~md
+````md
 # [Project Name]
 
 ## Overview
+
 [2-3 sentences describing the whole effort across children]
 
 ## Global Constraints
+
 - [Constraints that apply to every child plan]
 
 ## Assumptions
+
 - [Cross-cutting assumptions]
 
 ## Plan Dependency Graph
+
 ```mermaid
 graph LR
   foo --> bar
@@ -204,24 +212,26 @@ graph LR
 ```
 
 ## Plans
+
 1. [Plan 1 Name](01-foo.md) — pending
 2. [Plan 2 Name](02-bar.md) — pending
 
 ## Open Questions
+
 - [Only unresolved items that still matter across plans]
-~~~
+````
 
 ### Index status values
 
 Same four values as a phase, same spelling: `pending`, `in-progress`,
 `complete`, `blocked`.
 
-| Index value | Set by | When |
-|---|---|---|
-| `pending` | `plan-multi` | When the child file is first written. |
-| `in-progress` | `plan-phase` | When it starts a phase of a child whose index line still reads `pending`. |
-| `complete` | `plan-reflect` | When **every** phase of that child is `complete`. |
-| `blocked` | `plan-reflect` | When a phase of that child is `blocked`. |
+| Index value   | Set by         | When                                                                      |
+| ------------- | -------------- | ------------------------------------------------------------------------- |
+| `pending`     | `plan-multi`   | When the child file is first written.                                     |
+| `in-progress` | `plan-phase`   | When it starts a phase of a child whose index line still reads `pending`. |
+| `complete`    | `plan-reflect` | When **every** phase of that child is `complete`.                         |
+| `blocked`     | `plan-reflect` | When a phase of that child is `blocked`.                                  |
 
 ### Locating and updating a child's index line (robust matching)
 
@@ -233,7 +243,7 @@ Do not match on the delimiter glyph. Match like this:
    one of the four values.
 3. To update, replace that final token. Leave the rest of the line untouched.
 
-The visible ` — ` separator is for humans; matching depends only on the link
+The visible `—` separator is for humans; matching depends only on the link
 target and the trailing status word, so a stray hyphen/en-dash never breaks sync.
 
 ### Identifiers
@@ -253,7 +263,6 @@ target and the trailing status word, so a stray hyphen/en-dash never breaks sync
 - `plan-reflect` is the only writer of `complete`/`blocked` and of `Remaining:`/
   `Blocked on:` notes; it verifies against the repo before writing.
 - Phases are `## Phase <N>:`, numbered from 1, contiguous.
-- Standalone plan path: `plans/<YYYY-MM-DD>-<slug>.md`. Multi: see §1.
-- Vault path ⇒ `obsidian` CLI; otherwise ordinary file tools.
+- Standalone plan path: `<resolved-dir>/<YYYY-MM-DD>-<slug>.md`. Multi: see §1.
 - Child frontmatter is written **with** `---` fences.
 - Index lines are matched by link target + trailing status word.

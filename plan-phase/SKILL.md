@@ -10,7 +10,7 @@ Execute one phase from a saved plan file.
 This is the execution step of the pipeline:
 `plan-create` -> `plan-phase` -> `plan-reflect`
 
-**Read the plan file contract first:** `/Users/HulbertJ/.claude/skills/plan-shared/PLAN-CONTRACT.md` defines how to find the plan, the phase `Status:` values and who owns each transition, and the parent-index rules. The rules below are specific to *executing* a phase and assume that contract. If anything here seems to disagree with the contract, the contract wins.
+**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines how to find the plan, the phase `Status:` values and who owns each transition, and the parent-index rules. The rules below are specific to *executing* a phase and assume that contract. If anything here seems to disagree with the contract, the contract wins.
 
 Treat the plan as the contract for what must be accomplished. Use the repo to determine how to do it. Run exactly one phase — to run the whole plan unattended, that is `plan-auto`'s job.
 
@@ -46,7 +46,7 @@ If the plan file is missing, or step 1–2 is genuinely ambiguous, ask the user.
 
 ## Delegating isolated workstreams
 
-Prefer running genuinely isolated work as parallel subagents (the Agent tool) instead of doing everything serially. Strong candidates:
+Prefer running genuinely isolated work as parallel subagents instead of doing everything serially. Strong candidates:
 
 - **Read-only investigation** — mapping call sites, surveying tests, gathering context. Parallel explorers can't conflict.
 - **Disjoint edits** — non-overlapping files/modules with clear ownership. If two streams might touch the same file, give each subagent its own git worktree (Agent `isolation: "worktree"`) so they can't collide, then integrate.
@@ -72,16 +72,16 @@ To keep delegation from adding divergence:
 
 ### 1b. Mark the phase in-progress
 
-Set the selected phase's `- Status:` line from `pending` to `in-progress` (contract §3). This is the start marker, and the only edit to the phase body you make. (Edit the file in place; if the plan is in the vault, use the `obsidian` CLI per the contract's storage rule.) If the phase is already `in-progress` — e.g. a prior run died mid-phase — leave it and re-examine what is actually done before redoing work.
+Set the selected phase's `- Status:` line from `pending` to `in-progress` (contract §3). This is the start marker, and the only edit to the phase body you make. (Edit the file in place) If the phase is already `in-progress` — e.g. a prior run died mid-phase — leave it and re-examine what is actually done before redoing work.
 
 ### 1c. Update parent index (if applicable)
 
 If the plan file has `parent_plan` frontmatter AND this child's line in the parent index currently reads `pending`:
 
 - Resolve the parent index path relative to the child plan file (typically `./index.md` in the same directory).
-- Read the parent index (`obsidian read path="..."`).
+- Read the parent index.
 - In the `## Plans` list, locate this child's line and update its trailing status word to `in-progress`, following the contract's line-matching grammar (match by link target, replace the trailing token).
-- Write the updated index (`obsidian create path="..." content="..." overwrite`).
+- Write the updated index.
 
 If there is no `parent_plan` frontmatter, skip this step.
 
@@ -154,6 +154,6 @@ Stop and ask the user if:
 - implementation would require risky migration or destructive changes
 - the codebase strongly suggests the plan is no longer valid
 
-If delegation is unavailable in the current environment, continue locally rather than blocking on it.
+If delegation or subagent utilization is unavailable in the current environment, continue locally rather than blocking on it.
 
 Otherwise, proceed and make the phase real.

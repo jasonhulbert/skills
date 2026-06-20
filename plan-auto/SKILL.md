@@ -12,7 +12,7 @@ Run a saved plan end-to-end without per-phase user input.
 Underlying contract:
 `plan-create` -> (`plan-phase` -> `plan-reflect`)+   ← `plan-auto` drives the inner loop
 
-**Read the plan file contract first:** `/Users/HulbertJ/.claude/skills/plan-shared/PLAN-CONTRACT.md` defines phase `Status:` values and that only `complete` counts as done — the loop's resume and stop logic depend on it. This skill is a thin orchestrator: it does **not** re-implement `plan-phase` or `plan-reflect`; it runs each of them in full per phase and adds the loop control, progress checks, and stop conditions below. When in doubt about what happens inside a phase, defer to those skills. The plan file is the only persistent state; `plan-auto` adds no bookkeeping files.
+**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines phase `Status:` values and that only `complete` counts as done — the loop's resume and stop logic depend on it. This skill is a thin orchestrator: it does **not** re-implement `plan-phase` or `plan-reflect`; it runs each of them in full per phase and adds the loop control, progress checks, and stop conditions below. When in doubt about what happens inside a phase, defer to those skills. The plan file is the only persistent state; `plan-auto` adds no bookkeeping files.
 
 Because this runs unattended, its job is as much about *halting safely* as making progress.
 

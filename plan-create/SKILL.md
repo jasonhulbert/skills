@@ -10,7 +10,7 @@ Create a phased implementation plan for real execution in the current codebase.
 `plan-create` produces the durable plan artifact that `plan-phase`, `plan-reflect`, and `plan-auto` all consume, and that `plan-multi` generates one of per child. It is the entry point of the pipeline:
 `plan-create` -> (`plan-phase` -> `plan-reflect`)
 
-**Read the plan file contract first:** `/Users/HulbertJ/.claude/skills/plan-shared/PLAN-CONTRACT.md` defines the file location/naming, the document schema, the phase `Status:` values, and the multi-plan frontmatter. The rules below are specific to *creating* a plan and assume that contract. If anything here seems to disagree with the contract, the contract wins.
+**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines the file location/naming, the document schema, the phase `Status:` values, and the multi-plan frontmatter. The rules below are specific to *creating* a plan and assume that contract. If anything here seems to disagree with the contract, the contract wins.
 
 The plan you write is a working artifact. Later skills should be able to execute and update it without needing a large amount of extra restatement from the user. A malformed plan breaks every downstream skill, so conform to the schema exactly.
 
@@ -35,7 +35,7 @@ When invoked by `plan-multi`, expect a scoped brief with:
 - `child_goal` — treat as the user's request
 - `child_constraints` — merge into the `## Constraints` section (includes a copy of global constraints)
 - `depends_on` — list of parent-sibling plan slugs
-- `output_path` — exact path to write the plan file (overrides the default `plans/` location)
+- `output_path` — exact path to write the plan
 - `child_frontmatter` — YAML to prepend verbatim above the `#` heading, of the form:
   ```yaml
   ---
@@ -48,11 +48,11 @@ When invoked by `plan-multi`, expect a scoped brief with:
 
 Behavior when a brief is supplied:
 
-- Write the plan to `output_path` exactly. The path is inside the Obsidian vault, so write via the `obsidian` CLI (see the contract's storage-backend rule).
+- Write the plan to `output_path` exactly.
 - Prepend `child_frontmatter` above the `# [Project or Feature Name]` heading, **including its `---` fences** exactly as supplied. The frontmatter must be valid (opening and closing `---`), or downstream parent-index sync silently fails.
 - Reference `depends_on` plans (bare slugs) in individual phase `Dependencies:` sections only where a phase actually depends on work from a prior plan. The cross-plan dep graph itself lives in the parent index.
 
-Standalone behavior: write to the repo `plans/` directory per §1 of the contract, with no frontmatter.
+Standalone behavior: Refer to §1 of the contract.
 
 ## Critical Rules
 
@@ -112,7 +112,6 @@ of the contract:
   the goal). Use an existing repo `plans/` directory if one exists, else create
   `plans/` at the repo root. If that exact filename exists, append `-2`, `-3`, …
   rather than overwriting.
-- Invoked by `plan-multi`: write to `output_path` exactly, via the `obsidian` CLI.
 
 ### 5. Verify the artifact
 
