@@ -12,7 +12,7 @@ Run a saved plan end-to-end without per-phase user input.
 Underlying contract:
 `plan-create` -> (`plan-phase` -> `plan-reflect`)+   ← `plan-auto` drives the inner loop
 
-**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines phase `Status:` values and that only `complete` counts as done — the loop's resume and stop logic depend on it. This skill is a thin orchestrator: it does **not** re-implement `plan-phase` or `plan-reflect`; it runs each of them in full per phase and adds the loop control, progress checks, and stop conditions below. When in doubt about what happens inside a phase, defer to those skills. The plan file is the only persistent state; `plan-auto` adds no bookkeeping files.
+**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines phase `Status:` values and that only `complete` counts as done — the loop's resume and stop logic depend on it. This skill is a thin orchestrator: it does **not** re-implement `plan-phase` or `plan-reflect`; it runs each of them in full per phase and adds the loop control, progress checks, and stop conditions below. When in doubt about what happens inside a phase, defer to those skills. "Thin orchestrator" describes `plan-auto`'s own scope — loop control, progress checks, stop conditions — not a ceiling on how much work each phase may do: a phase keeps `plan-phase`'s full latitude. The plan file stays the durable source of truth for phase status; `plan-auto` adds no competing *persistent* plan artifact (a second plan file, a durable run log) that could drift from it. Ephemeral, in-session progress tracking is fine.
 
 Because this runs unattended, its job is as much about *halting safely* as making progress.
 
@@ -205,7 +205,7 @@ Do not ask the user for permission to continue after a successful phase. The suc
 
 ## Notes For The Operator (You)
 
-- `plan-auto` is a convenience wrapper, not a new execution engine. When in doubt about what to do inside a phase, defer to `plan-phase`'s rules. When in doubt about how to update the plan file, defer to `plan-reflect`'s rules.
+- `plan-auto` owns the cross-phase loop — sequencing, progress checks, stop conditions — and defers the inside-a-phase work to `plan-phase`. Deferring means inheriting `plan-phase`'s full latitude, including its guidance to delegate and parallelize isolated workstreams; it does not mean doing less per phase. When in doubt about what to do inside a phase, follow `plan-phase`'s rules. When in doubt about how to update the plan file, follow `plan-reflect`'s rules.
 - Do not batch reflections across multiple phases. Reflect after each phase so the next phase reads an accurate plan.
-- Do not introduce meta-state files, run logs, or side artifacts. The plan file and the repo are the only persistent state.
+- Do not introduce a competing *persistent* plan artifact — a duplicate plan file, a durable run log, a status sidecar — that could drift from the plan file or break resume; the plan file and the repo remain the source of truth across invocations. This does not forbid ephemeral, in-session progress tracking, which persists nothing and cannot drift.
 - If you hit a tool or environment limitation (e.g., validation cannot be run), treat that the same way `plan-phase` and `plan-reflect` do — surface it honestly, and stop if it prevents marking the phase complete.
