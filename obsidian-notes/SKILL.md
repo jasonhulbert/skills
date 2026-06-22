@@ -1,11 +1,20 @@
 ---
 name: obsidian-notes
-description: "Use for creating, reading, appending, prepending, moving, renaming, deleting, opening, templating, or editing frontmatter properties on Obsidian notes via the `obsidian` CLI."
+description: "Use for Obsidian note lifecycle operations through the `obsidian` MCP server first: read, create, append, prepend, move, rename, open, and frontmatter property read/set. Fall back to the Obsidian CLI for unavailable workflows such as templates, delete, or property removal, or when MCP is unavailable, not registered, or cannot express the needed operation."
 ---
 
 # Obsidian Notes
 
-Use the `obsidian` CLI for the note lifecycle: create, read, append, prepend, delete, move, rename, open, frontmatter properties, and templates.
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Use MCP tools such as `obsidian_note_read`, `obsidian_note_create`, `obsidian_note_append`, `obsidian_note_prepend`, `obsidian_note_move`, `obsidian_note_rename`, `obsidian_note_open`, `obsidian_property_read`, and `obsidian_property_set` before falling back to CLI. Relevant MCP resources:
+
+- `obsidian://guidance/note-writes`
+- `obsidian://guidance/frontmatter`
+- `obsidian://guidance/cli-safety`
+- `obsidian://guidance/error-recovery`
+
+When fallback is needed, use the `obsidian` CLI for the note lifecycle: create, read, append, prepend, delete, move, rename, open, frontmatter properties, and templates.
 
 Use `obsidian-cli` for shared syntax, vault targeting, and quoting rules. Use `obsidian-formatting` when deciding what markdown elements to put inside the note (callouts, embeds, block refs, tables, Mermaid, etc.) so content is structured rather than a wall of plain text.
 
@@ -20,7 +29,8 @@ Use `obsidian-cli` for shared syntax, vault targeting, and quoting rules. Use `o
 
 ```bash
 obsidian create path="folder/note.md" content="Initial content"
-obsidian create name="My Note" content="# My Note\nBody"
+obsidian create name="My Note" content="# My Note
+Body"
 obsidian create path="existing.md" content="Replacement" overwrite
 obsidian create path="daily/from-template.md" template="Daily Note"
 obsidian create path="note.md" content="..." open newtab
@@ -46,7 +56,9 @@ obsidian read file="My Note"
 ```bash
 obsidian append path="note.md" content="- list item"
 obsidian append path="note.md" content="inline fragment" inline
-obsidian prepend path="note.md" content="---\ntags: [new]\n---"
+obsidian prepend path="note.md" content="---
+tags: [new]
+---"
 ```
 
 - Default behavior inserts a newline separator.

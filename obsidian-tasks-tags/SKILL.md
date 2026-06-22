@@ -1,11 +1,20 @@
 ---
 name: obsidian-tasks-tags
-description: "Use for Obsidian tags and Markdown checkbox tasks: list tags, inspect tag usage, list tasks, or update/toggle task status with the `obsidian` CLI."
+description: "Use for Obsidian tags and Markdown checkbox tasks through the `obsidian` MCP server first: list tags, inspect tag usage, list tasks, and update/toggle task status. Fall back to the Obsidian CLI for custom task status conventions, stale-line recovery, or when MCP is unavailable, not registered, or cannot express the needed operation."
 ---
 
 # Obsidian Tasks And Tags
 
-Use the `obsidian` CLI for tag discovery and Markdown checkbox task management.
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Use MCP tools such as `obsidian_tasks`, `obsidian_task_update`, `obsidian_tags`, and `obsidian_tag` before falling back to CLI. Relevant MCP resources:
+
+- `obsidian://guidance/tasks-tags`
+- `obsidian://guidance/task-statuses`
+- `obsidian://guidance/cli-safety`
+- `obsidian://guidance/error-recovery`
+
+When fallback is needed, use the `obsidian` CLI for tag discovery and Markdown checkbox task management.
 
 Use `obsidian-cli` for shared syntax and vault targeting. Tags are passed without the `#` prefix.
 

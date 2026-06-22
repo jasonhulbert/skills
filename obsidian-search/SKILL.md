@@ -1,11 +1,19 @@
 ---
 name: obsidian-search
-description: "Use for read-only Obsidian vault exploration: full-text search, files, folders, metadata, outlines, word counts, backlinks, outgoing links, unresolved links, orphans, dead ends, and aliases."
+description: "Use for read-only Obsidian vault exploration through the `obsidian` MCP server first: full-text search, files, folders, metadata, outlines, word counts, backlinks, outgoing links, unresolved links, orphans, dead ends, aliases, tasks, tags, and daily reads. Fall back to the Obsidian CLI only when MCP is unavailable, not registered, or cannot express the needed read-only workflow."
 ---
 
 # Obsidian Search
 
-Use the `obsidian` CLI for read-only vault exploration: search, structure, metadata, outlines, word counts, and link graph analysis.
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Use MCP read tools for search, files, folders, outlines, word counts, link graph, aliases, tasks, tags, and daily reads. Relevant MCP resources:
+
+- `obsidian://guidance/read-only-workflows`
+- `obsidian://guidance/cli-safety`
+- `obsidian://guidance/error-recovery`
+
+When fallback is needed, use the `obsidian` CLI for read-only vault exploration: search, structure, metadata, outlines, word counts, and link graph analysis.
 
 Use `obsidian-cli` for shared syntax, vault targeting, and command discovery.
 
