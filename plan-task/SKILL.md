@@ -1,6 +1,6 @@
 ---
 name: plan-task
-description: Implement a small, well-scoped task in a single pass: inspect the repo, confirm intent with the user, make the change, validate, and report. Lightweight counterpart to `plan-create` for changes that don't warrant a durable phased plan.
+description: "Implement a small, well-scoped task in a single pass: inspect the repo, confirm intent with the user, make the change, validate, and report. Lightweight counterpart to `plan-create` for changes that don't warrant a durable phased plan."
 ---
 
 # Plan Task
