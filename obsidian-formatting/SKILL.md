@@ -1,9 +1,21 @@
 ---
 name: obsidian-formatting
-description: "Use when authoring or editing Obsidian note content to choose the right markdown element: callouts (incl. foldable and nested), embeds (notes/images/SVG/PDF/audio/video, with sizing), wikilinks and block refs, tables, Mermaid diagrams, math, footnotes, highlights, comments, and tasks with custom status characters."
+description: "Use when authoring or editing Obsidian note content through the `obsidian` MCP server first, especially to choose the right markdown element: callouts, embeds, attachments, wikilinks and block refs, tables, Mermaid diagrams, frontmatter, math, footnotes, highlights, comments, and tasks with custom status characters. Fall back to local formatting examples when MCP guidance resources are unavailable."
 ---
 
 # Obsidian Formatting
+
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Read MCP formatting guidance resources before falling back to local examples when available:
+
+- `obsidian://guidance/formatting`
+- `obsidian://guidance/attachments`
+- `obsidian://guidance/wikilinks-blocks`
+- `obsidian://guidance/mermaid`
+- `obsidian://guidance/frontmatter`
+- `obsidian://guidance/task-statuses`
+- `obsidian://guidance/note-writes`
 
 Use the full Obsidian markdown dialect — not just plain text — when writing note content. Obsidian renders far more than CommonMark, and the extra elements make notes scannable, navigable, and reusable.
 
@@ -112,7 +124,7 @@ Interpret the returned value as follows:
 | `""` or `"/"` | Vault folder | `<vault-path>/` |
 | `"./"` | Same folder as current file | the directory of the note that will reference it |
 | Starts with `./` (e.g. `"./_files"`) | Subfolder of current folder | `<note-dir>/<suffix>/` |
-| Anything else (e.g. `"_attachments"`) | Specified folder | `<vault-path>/<value>/` |
+| Anything else (e.g. `"_attachments"`) | Specified folder | `<vault-path>/<value>` |
 
 If `attachmentFolderPath` is missing from `app.json`, treat it as vault root. Create the destination folder if it does not yet exist. After saving, reference the file by name with `![[filename.ext]]` — wikilink resolution by name does not depend on where the file lives, so a short reference keeps working if attachments later move.
 

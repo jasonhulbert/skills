@@ -1,11 +1,19 @@
 ---
 name: obsidian-cli
-description: "Use for any Obsidian CLI workflow or when another obsidian-* skill needs shared syntax, quoting, vault targeting, safety rules, or command discovery for the local `obsidian` command."
+description: "Fallback for Obsidian CLI workflows when the `obsidian` MCP server is unavailable, not registered in the current session, or cannot express the needed operation. Use for shared CLI syntax, quoting, vault targeting, safety rules, command discovery, direct-write recovery, sandbox caveats, and destructive-operation warnings."
 ---
 
 # Obsidian CLI
 
-Use the local `obsidian` CLI to work with the user's Obsidian vault through the running Obsidian desktop app.
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Use MCP tools such as `obsidian_health`, `obsidian_vaults`, and `obsidian_vault_info` before falling back to the local `obsidian` CLI. Relevant MCP resources:
+
+- `obsidian://guidance/cli-safety`
+- `obsidian://guidance/error-recovery`
+- `obsidian://guidance/read-only-workflows`
+
+When fallback is needed, use the local `obsidian` CLI to work with the user's Obsidian vault through the running Obsidian desktop app.
 
 This is the shared primer for the focused skills:
 
@@ -35,7 +43,8 @@ obsidian <command> key=value flag
 - Subcommands use colons: `daily:append`, `property:set`, `search:context`.
 - Boolean flags are bare words: `total`, `verbose`, `inline`, `overwrite`, `active`, `open`, `newtab`.
 - Quote values with spaces: `file="My Note"`.
-- Inside `content=`, only `\n` and `\t` are interpreted as escapes. Do not write `\"`; it creates literal backslash-quote text in the note.
+- Inside `content=`, only `
+` and `	` are interpreted as escapes. Do not write `"`; it creates literal backslash-quote text in the note.
 
 ## Safer Multi-Line Writes
 
@@ -92,6 +101,6 @@ Run `obsidian help <command>` for exact flags.
 - Connection error: Obsidian is not running or the local connection is unavailable.
 - Write exits `-1` while `obsidian read/help/vaults` work: Codex sandbox blocked the write; rerun with escalation.
 - Node wrapper returns `status: null`, `signal: SIGABRT`: do not debug Obsidian; stop using Node to spawn it and call `obsidian` directly.
-- Literal `\"` in a note: content was over-escaped; rewrite without escaping double quotes.
+- Literal `"` in a note: content was over-escaped; rewrite without escaping double quotes.
 - Note created in the wrong folder: `name=` was used where `path=` was needed.
 - Unexpected GUI launch: bare `obsidian` was run; stop it and use `obsidian help`.

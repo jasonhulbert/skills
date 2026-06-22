@@ -1,11 +1,21 @@
 ---
 name: obsidian-daily
-description: "Use for today's Obsidian daily note: open, locate path, read, append, prepend, or add journal, standup, daily log, or today-scoped content via the `obsidian` CLI."
+description: "Use for today's Obsidian daily note through the `obsidian` MCP server first: locate path, read, append, prepend, add journal/standup/daily-log content, and list or update daily tasks. Fall back to the Obsidian CLI for non-today daily-note resolution or when MCP is unavailable, not registered, or cannot express the needed operation."
 ---
 
 # Obsidian Daily
 
-Use the `obsidian` CLI for today's daily note. Daily commands respect the vault's configured daily-note folder, filename format, and template.
+Prefer the `obsidian` MCP server first. Use this skill only when the MCP server is unavailable, not registered in the current session, or cannot express the needed fallback.
+
+Use MCP tools such as `obsidian_daily_path`, `obsidian_daily_read`, `obsidian_daily_append`, `obsidian_daily_prepend`, daily task listing tools, and `obsidian_task_update` before falling back to CLI. Relevant MCP resources:
+
+- `obsidian://guidance/daily-notes`
+- `obsidian://guidance/tasks-tags`
+- `obsidian://guidance/note-writes`
+- `obsidian://guidance/cli-safety`
+- `obsidian://guidance/error-recovery`
+
+When fallback is needed, use the `obsidian` CLI for today's daily note. Daily commands respect the vault's configured daily-note folder, filename format, and template.
 
 Use `obsidian-cli` for shared syntax, vault targeting, and content-escaping rules. Use `obsidian-formatting` when deciding what markdown elements to author into the daily note (callouts for highlights, foldable callouts to keep the note tidy, tables for standups, etc.).
 
