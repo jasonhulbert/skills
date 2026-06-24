@@ -34,11 +34,10 @@ If the plan file is missing, or step 1–2 is genuinely ambiguous, ask the user.
 
 - Implement the phase directly in the codebase. Do not spend the turn filling out templates.
 - Ask questions only for blocking ambiguity, unsafe changes, or major product decisions.
-- **Prefer subagents for isolated workstreams.** When part of the phase is genuinely separable, run it as parallel subagents (the Agent tool) rather than serially — see "Delegating isolated workstreams." Keep critical-path, tightly coupled, or high-context work in the main agent, and never block on delegation.
-- Prefer existing patterns, abstractions, and file structure over inventing new ones.
+- **Prefer subagents for isolated workstreams.** When part of the phase is genuinely separable, run it as parallel subagents rather than serially — see "Delegating isolated workstreams." Keep critical-path, tightly coupled, or high-context work in the main agent, and never block on delegation.
 - **Stay in this phase's scope.** Change only what this phase requires. Do not implement deliverables that belong to other phases, even if convenient — that corrupts `plan-reflect`'s per-phase verification. Note out-of-scope problems for reflection instead of fixing them.
 - **Do not start a phase with unmet dependencies.** If the phase's `Dependencies:` name an earlier phase that is not `complete`, stop and ask rather than building on missing prerequisites.
-- Keep the repo in a working state while editing.
+- Whenever feasible, keep the repo in a working state while editing.
 - Run validation that is appropriate for the change. Do not claim success without verification.
 - If the best implementation materially deviates from the plan, explain the deviation in the final summary so `plan-reflect` can update the plan.
 - **Phase-body edits you may make are limited to the `Status:` start marker.** Set the phase from `pending` to `in-progress` when you begin (contract §3). Do not set `complete`/`blocked` or edit other phases — `plan-reflect` owns those.
