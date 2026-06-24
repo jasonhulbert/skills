@@ -1,6 +1,6 @@
 ---
 name: plan-task
-description: Implement a small, well-scoped task in a single pass: inspect the repo, confirm intent with the user, make the change, validate, and report. Lightweight counterpart to `plan-create` for changes that don't warrant a durable phased plan.
+description: "Implement a small, well-scoped task in a single pass: inspect the repo, confirm intent with the user, make the change, validate, and report. Lightweight counterpart to `plan-create` for changes that don't warrant a durable phased plan."
 ---
 
 # Plan Task
@@ -23,7 +23,7 @@ Use, in this order:
 - Do not write a plan file. The skill is intentionally ephemeral.
 - Stay surgical. Touch only what the task requires. Do not refactor or improve adjacent code.
 - If any **Escalation trigger** (below) is true — at confirmation time or mid-task — stop and recommend `plan-create` instead of pushing through.
-- **Delegate isolated sub-work, not the implementation.** For bounded, separable sub-work — parallel read-only investigation, or an independent check of your change — spin up subagents (the Agent tool) with a self-contained brief. But if the *implementation itself* wants to split into parallel write-streams, that's a sign the task exceeds `plan-task` — escalate to `plan-create` rather than orchestrating it here.
+- **Delegate isolated sub-work, not the implementation.** For bounded, separable sub-work — parallel read-only investigation, or an independent check of your change — spin up subagents (the Agent tool) with a self-contained brief. But if the _implementation itself_ wants to split into parallel write-streams, that's a sign the task exceeds `plan-task` — escalate to `plan-create` rather than orchestrating it here.
 - Validate every change against a concrete check. Do not claim "done" without one.
 - Match existing patterns and conventions. Do not invent new ones for a one-off change.
 
@@ -89,18 +89,23 @@ Keep the response short and operational:
 Task: [one-line restatement]
 
 Files changed:
+
 - [path] — [short reason]
 
 Validation:
+
 - [command or check] — [result]
 
 Assumptions relied on:
+
 - [only if applicable]
 
 Not done / deferred:
+
 - [anything in the original ask you intentionally left out, and why — omit if nothing]
 
 Open issues:
+
 - [only if applicable]
 ```
 
