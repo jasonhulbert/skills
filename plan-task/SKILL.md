@@ -22,7 +22,7 @@ Use, in this order:
 - Always confirm intent with the user before editing. Because this flow edits the repo with **no reviewable plan artifact**, the confirmation gate is mandatory: present the scope and wait for an explicit go-ahead. An explicit go-ahead already in the user's request (e.g. "yes, just rename X to Y, go ahead") satisfies the gate — restate the scope, then proceed without a second round-trip.
 - Do not write a plan file. The skill is intentionally ephemeral.
 - Stay surgical. Touch only what the task requires. Do not refactor or improve adjacent code.
-- If any **Escalation trigger** (below) is true — at confirmation time or mid-task — stop and recommend `plan-create` instead of pushing through.
+- If any **Escalation trigger** (below) is true — at confirmation time or mid-task — stop and recommend the directory-backed `plan-create` flow instead of pushing through.
 - **Delegate isolated sub-work, not the implementation.** For bounded, separable sub-work — parallel read-only investigation, or an independent check of your change — spin up subagents (the Agent tool) with a self-contained brief. But if the _implementation itself_ wants to split into parallel write-streams, that's a sign the task exceeds `plan-task` — escalate to `plan-create` rather than orchestrating it here.
 - Validate every change against a concrete check. Do not claim "done" without one.
 - Match existing patterns and conventions. Do not invent new ones for a one-off change.

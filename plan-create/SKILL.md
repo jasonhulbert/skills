@@ -1,187 +1,104 @@
 ---
 name: plan-create
-description: Create a durable, phased implementation plan saved to a file, for a multi-step software change worth tracking across sessions. Triggers on "plan this feature", "break this into phases", "make a plan for X". Executed by `plan-phase`/`plan-auto`, updated by `plan-reflect`. Use `plan-task` instead for a small one-pass change that needs no saved plan; use `plan-multi` for very large work spanning multiple services or more than ~8 phases.
+description: Create a durable, directory-backed phased implementation plan. Each phase is a separate file, so later execution loads only the needed phase. Use for a multi-step software change worth tracking across sessions; use `plan-task` for a one-pass change and `plan-multi` for a very large multi-workstream effort.
 ---
 
 # Plan Create
 
 Create a phased implementation plan for real execution in the current codebase.
 
-`plan-create` produces the durable plan artifact that `plan-phase`, `plan-reflect`, and `plan-auto` all consume, and that `plan-multi` generates one of per child. It is the entry point of the pipeline:
-`plan-create` -> (`plan-phase` -> `plan-reflect`)
+Pipeline: `plan-create` -> (`plan-phase` -> `plan-reflect`)+.
 
-**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines the file location/naming, the document schema, the phase `Status:` values, and the multi-plan frontmatter. The rules below are specific to *creating* a plan and assume that contract. If anything here seems to disagree with the contract, the contract wins.
-
-The plan you write is a working artifact. Later skills should be able to execute and update it without needing a large amount of extra restatement from the user. A malformed plan breaks every downstream skill, so conform to the schema exactly.
-
-**Escalate or de-escalate before planning:** if the change is small enough to finish in one focused pass with no saved plan, use `plan-task` instead. If it would exceed ~8 phases or span multiple deployables/services, use `plan-multi` instead.
+Read `../plan-shared/PLAN-CONTRACT.md` first. It defines the plan directory,
+index and phase schemas, status ownership, and the rules for revising order.
+The contract wins over this skill.
 
 ## Inputs
 
-Use, in this order:
+Use, in order:
 
-1. The user's request
-2. The current codebase and local docs
-3. Only the minimum blocking questions needed to resolve ambiguity
+1. The user's request.
+2. The current codebase and local documentation.
+3. Only questions that block scope, sequencing, risk, or acceptance criteria.
 
-If the request is too vague to plan against, ask focused questions first. Otherwise, inspect the repo before asking the user things the code can already answer.
+Use `plan-task` when the work fits in one focused implementation pass. Use
+`plan-multi` when it exceeds roughly eight phases and has real workstream,
+deployable, or ownership boundaries.
 
-## Invocation by plan-multi
+### Invocation by `plan-multi`
 
-`plan-create` may be invoked directly (standalone) or by `plan-multi` as one child of a multi-plan artifact.
+`plan-multi` supplies a scoped brief with `global_goal`, `child_goal`,
+`child_constraints`, `depends_on`, and `output_dir`. Treat the combined global
+and child goal plus constraints as the user's request. Write that child's
+`index.md` and phase files to `output_dir` exactly. The child index has the
+normal plan-index schema; it does not have frontmatter or a copied parent
+status. Its goal must state the child outcome in the context of `global_goal`,
+and its constraints must include every applicable global constraint.
 
-When invoked by `plan-multi`, expect a scoped brief with:
+Put a bare sibling slug in a phase's `## Dependencies` only when that phase
+really depends on the sibling's work. Every supplied `depends_on` slug must
+appear in at least one phase dependency, and no phase may name another sibling.
 
-- `child_goal` — treat as the user's request
-- `child_constraints` — merge into the `## Constraints` section (includes a copy of global constraints)
-- `depends_on` — list of parent-sibling plan slugs
-- `output_path` — exact path to write the plan
-- `child_frontmatter` — YAML to prepend verbatim above the `#` heading, of the form:
-  ```yaml
-  ---
-  parent_plan: ./index.md
-  plan_index: N
-  total_plans: M
-  depends_on: [slug1, slug2]
-  ---
-  ```
+## Rules
 
-Behavior when a brief is supplied:
-
-- Write the plan to `output_path` exactly.
-- Prepend `child_frontmatter` above the `# [Project or Feature Name]` heading, **including its `---` fences** exactly as supplied. The frontmatter must be valid (opening and closing `---`), or downstream parent-index sync silently fails.
-- Reference `depends_on` plans (bare slugs) in individual phase `Dependencies:` sections only where a phase actually depends on work from a prior plan. The cross-plan dep graph itself lives in the parent index.
-
-Standalone behavior: Refer to §1 of the contract.
-
-## Critical Rules
-
-- Do not start implementing code.
-- Do not over-prescribe the solution. Define outcomes, constraints, and validation, not detailed implementation steps.
-- Ask questions only when the answer materially changes scope, sequencing, risk, or acceptance criteria.
-- If you proceed with a non-blocking assumption, state it explicitly in the plan.
-- Push back on technically weak requirements or sequencing.
-- Size phases so one phase can usually be executed in one focused implementation pass.
-- When it improves quality or reduces risk, design phases so independent subtasks can be delegated in parallel with clear ownership boundaries and minimal overlap.
+- Do not implement code.
+- Define outcomes, constraints, and validation rather than prescribing internals.
+- Keep a phase executable in one focused implementation pass.
+- State any non-blocking assumptions in the plan index.
+- Make every validation criterion falsifiable.
+- Keep shared context in `index.md`; keep execution detail and status in the
+  corresponding phase file.
+- Do not create or accept a legacy single-file plan. Ask the user to migrate it.
 
 ## Workflow
 
 ### 1. Build context
 
-- Inspect the repo structure and the relevant code paths.
-- Identify the real integration points, constraints, and likely risks.
-- Separate what is known from what is assumed.
+Inspect the relevant repository paths, tests, integration points, and local
+constraints. Separate known facts from assumptions.
 
 ### 2. Resolve only blocking ambiguity
 
-When needed, ask concise, decision-oriented questions. Prefer:
+Ask concise, decision-oriented questions only when the answer changes the
+breakdown, ordering, risk, or acceptance criteria. Otherwise proceed with an
+explicit assumption.
 
-- "I recommend X because Y. Does that match your intent?"
-- "If we choose A, Phase 2 changes in this way. If we choose B, it changes in that way."
+### 3. Design phases
 
-Do not ask broad brainstorming questions when the repo already narrows the answer.
+For every phase define an objective, checkable deliverables, dependencies,
+falsifiable validation, and only the notes needed to execute safely. Prefer
+boundaries that support isolated investigation, disjoint edits, or independent
+verification without splitting tightly coupled work.
 
-### 3. Design the phase breakdown
+### 4. Write the directory artifact
 
-Each phase must be executable by `plan-phase` with access to:
+For standalone use the directory naming rules in contract §1. Create:
 
-- the plan file
-- the repo
-- the current conversation
+- `index.md` with the plan goal, constraints, assumptions, ordered phase links,
+  and any cross-phase open questions.
+- One `phase-<NN>-<slug>.md` file per phase, using contract §3.
 
-Each phase should include:
-
-- a clear objective
-- concrete deliverables
-- dependencies on prior phases
-- validation criteria that define done
-- only the minimum notes needed to avoid avoidable mistakes
-
-When useful, prefer phase boundaries that make deliberate delegation easier later, for example:
-
-- separating read-heavy investigation from write-heavy implementation
-- separating backend, frontend, migration, and test work when the write scopes are distinct
-- keeping tightly coupled or critical-path work in the same phase
-
-### 4. Persist the plan
-
-Write the final plan to a durable file using the naming and location rules in §1
-of the contract:
-
-- Standalone: `plans/<YYYY-MM-DD>-<slug>.md` (today's date, kebab-case slug from
-  the goal). Use an existing repo `plans/` directory if one exists, else create
-  `plans/` at the repo root. If that exact filename exists, append `-2`, `-3`, …
-  rather than overwriting.
+For a child brief, use `output_dir` exactly. Write the child index first as its
+recovery manifest, then generate phase files in order. If phase generation
+fails, stop and report the files present and missing; do not silently continue.
 
 ### 5. Verify the artifact
 
-Re-read the file you just wrote and confirm, before reporting. Do not report a
-plan that fails any of these:
+Re-read the index and every generated phase file before reporting. Confirm:
 
-- The `#` title, `## Goal`, and `## Constraints` sections exist.
-- Every phase heading is `## Phase <N>: <Name>`, numbered 1..K contiguously.
-- Every phase has exactly one `- Status: pending` line (no checkbox), a non-empty
-  `Objective:`, and a falsifiable `Validation:` (a runnable check or observable
-  result — not "works correctly").
-- If invoked by `plan-multi`: the `child_frontmatter` block sits above the `#`
-  heading **with its `---` fences**, and `output_path` was used exactly.
+- The index has `#`, `## Goal`, `## Constraints`, and `## Phases`.
+- Phase links are contiguous, ordered, and resolve to the named files.
+- Each phase heading and filename number agree.
+- Each phase has exactly one `- Status: pending`, a non-empty objective, at
+  least one deliverable, and falsifiable validation.
+- No index line includes a phase status.
+- For a child brief, its goal includes the global goal, its constraints include
+  applicable global constraints, and its sibling dependencies exactly match the
+  supplied `depends_on` list.
 
-Fix the file in place if any check fails.
+Fix failures in place. Do not report a malformed plan.
 
-## Plan Format
+## Output expectations
 
-Use this structure so the downstream skills have a consistent contract.
-
-When invoked by `plan-multi`, prepend the `child_frontmatter` block verbatim above the `#` heading. Standalone invocations omit the frontmatter.
-
-```md
----
-# Present only when invoked by plan-multi:
-parent_plan: ./index.md
-plan_index: N
-total_plans: M
-depends_on: [slug1, slug2]
----
-
-# [Project or Feature Name]
-
-## Goal
-- [What is being built or changed]
-
-## Constraints
-- [Technical, product, compliance, migration, timeline, or compatibility constraints]
-
-## Assumptions
-- [Only assumptions you are actively relying on]
-
-## Phase 1: [Name]
-- Status: pending
-- Objective: [What this phase accomplishes]
-- Deliverables:
-  - [Concrete, checkable output]
-- Dependencies:
-  - [Phase <N> | sibling <slug> | "none"]
-- Validation:
-  - [A runnable check or observable result, not "works correctly"]
-- Notes:
-  - [Only if needed for safe execution]
-- Delegation Notes:
-  - [Optional: which parts are safe to parallelize, which should stay local, and any ownership boundaries]
-
-## Phase 2: [Name]
-- Status: pending
-- Objective: ...
-
-## Open Questions
-- [Only unresolved items that still matter]
-```
-
-## Output Expectations
-
-After saving the plan file:
-
-- provide the plan path
-- summarize the phase breakdown briefly
-- call out any assumptions or open questions that remain
-
-Keep the response concise. The plan file is the primary artifact.
+Report the plan directory and its `index.md`, summarize the phase breakdown,
+and call out assumptions or open questions. The directory artifact is primary.

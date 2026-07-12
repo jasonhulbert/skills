@@ -1,61 +1,64 @@
-# Plan File Contract
+# Plan Directory Contract
 
-The single source of truth for the `plan-*` skills (`plan-create`, `plan-phase`,
-`plan-reflect`, `plan-auto`, `plan-multi`). Every one of those skills reads and
-writes the same artifact; this file defines that artifact exactly so two runs
-never disagree about format, status, or location.
+The `plan-*` skills use a directory-backed plan artifact. This file is the
+single source of truth for its layout, schemas, and status ownership. If a
+skill disagrees with this contract, fix the skill.
 
-If anything in a skill seems to conflict with this file, **this file wins** —
-fix the skill.
+Each phase lives in its own file. Skills load the compact plan index and only
+the phase files needed for their work. Do not use, create, or accept the former
+single-file plan layout; users must migrate those plans before using these
+skills.
 
 ---
 
 ## 1. Where plans live
 
-### Resolved plan directory
+Resolve the plan root from user context. If it is not explicit, use an existing
+workspace-root `plans/` directory or create `plans/` at the workspace root.
 
-- Resolve the directory path indicated by (or clearly inferred from) user-provided
-  context. If not indicated or inferred, look for an existing workspace root
-  `plans/` directory; create `plans/` if doesn't exist.
+### Standalone plan
 
-### Standalone plan (created by `plan-create` on its own)
+- Directory: `<resolved-dir>/<YYYY-MM-DD>-<slug>/`.
+- Index: `<plan-dir>/index.md`.
+- Phase files: `<plan-dir>/phase-<NN>-<phase-slug>.md`, where `<NN>` is a
+  two-digit, 1-based position (`01`, `02`, …).
+- If the directory already exists, append `-2`, `-3`, … to the directory name.
+  Never overwrite an existing plan.
 
-- Filename: `<resolved-dir>/<YYYY-MM-DD>-<slug>.md` where the date is today and `<slug>` is a
-  kebab-case slug derived from the goal (e.g. `2026-05-29-auth-refactor.md`).
-- If a file with that exact name already exists, append `-2`, `-3`, … — never
-  overwrite.
+### Multi-plan artifact
 
-### Multi-plan artifact (created by `plan-multi`)
+- Parent directory: `<resolved-dir>/<YYYY-MM-DD>-<parent-slug>/`.
+- Parent index: `<parent-dir>/index.md`.
+- Child directory: `<parent-dir>/plan-<NN>-<child-slug>/`, numbered in
+  topological order with a two-digit `<NN>`.
+- Each child directory is a standalone plan directory: it has its own
+  `index.md` and `phase-<NN>-<phase-slug>.md` files.
+- A child's canonical identifier is its bare `<child-slug>`. Derive it from the
+  child directory name; use it in dependency declarations and graph nodes.
 
-- Parent directory: `<resolved-dir>/<YYYY-MM-DD>-<parent-slug>/`
-- Parent index: `<parent-dir>/index.md`
-- Each child plan: `<parent-dir>/<NN>-<child-slug>.md`, where `<NN>` is the
-  1-based position in topological order, **zero-padded to two digits** (`01`,
-  `02`, …). The `<NN>-<child-slug>` token is identical in the filename, the index
-  link, and the dependency graph.
-- Every child plan carries the frontmatter block in §2.
+Directory names never end in `.md`. Markdown suffixes are reserved for files.
+
+### Locating an executable plan
+
+`plan-phase`, `plan-reflect`, and `plan-auto` accept a plan directory, that
+directory's `index.md`, or a phase-file path. Resolve a phase-file path to its
+containing plan directory. A multi-plan parent index is not executable; ask the
+user to identify a child plan. If a supplied path is a legacy monolithic plan
+file, stop and report that manual migration is required.
 
 ---
 
-## 2. Plan document schema
+## 2. Index schemas
 
-A child plan's frontmatter is present **only** for `plan-multi` children, and is
-written **with its `---` fences**, prepended verbatim above the `#` heading:
+Indexes are bounded manifests. They never contain a phase or child-plan status.
+Their links establish order and are the recovery manifest after an interrupted
+creation run.
 
-```
----
-parent_plan: ./index.md
-plan_index: N
-total_plans: M
-depends_on: [slug-a, slug-b]
----
-```
+### Plan index
 
-Standalone plans omit the frontmatter entirely.
+Every standalone or child plan directory has this format:
 
-Body structure (identical for standalone and child plans):
-
-```md
+````md
 # [Project or Feature Name]
 
 ## Goal
@@ -68,132 +71,34 @@ Body structure (identical for standalone and child plans):
 
 ## Assumptions
 
-- [Only assumptions you are actively relying on]
+- [Only assumptions actively relied on]
 
-## Phase 1: [Name]
+## Phases
 
-- Status: pending
-- Objective: [What this phase accomplishes]
-
-### Deliverables:
-
-- [Concrete, checkable output]
-
-### Dependencies:
-
-- [Phase <N> | sibling <slug> | "none"]
-
-### Validation:
-
-- [A runnable check or observable result — see §3]
-
-### Notes:
-
-- [Optional: only if needed for safe execution]
-
-### Delegation Notes:
-
-- [Optional: what is safe to parallelize, what stays local, ownership boundaries]
-
-## Phase 2: [Name]
-
-- Status: pending
-- Objective: ...
+1. [Phase 1: Discovery](phase-01-discovery.md)
+2. [Phase 2: Implementation](phase-02-implementation.md)
 
 ## Open Questions
 
-- [Only unresolved items that still matter. Omit the section if there are none.]
-```
+- [Only unresolved items that still matter across phases. Omit this section if empty.]
+````
 
-### Phase heading format (a hard contract)
+The `## Phases` list is ordered. Its markdown link targets must exactly match
+the filenames in the plan directory. No status token or other live-progress
+summary may appear on its entries.
 
-`## Phase <N>: <Name>` — `<N>` starts at 1, increments by 1, **contiguous, no
-gaps, no sub-numbers** (`Phase 2a` is illegal). Downstream skills identify,
-order, and cross-reference phases by this integer. Do not rename or renumber a
-phase once it exists; record provenance in a note bullet instead of editing the
-heading.
-
-### Validation criteria must be falsifiable
-
-Each phase's `Validation:` must be a concrete check a verifier can re-run or
-observe without re-deriving intent — e.g. `pytest tests/auth -k login passes`,
-`GET /health returns 200`, `the migration applies cleanly on a fresh DB`. Avoid
-unfalsifiable phrasing like "works correctly" or "looks right." `plan-reflect`
-re-runs these criteria; if they are vague it cannot verify the phase.
-
----
-
-## 3. Phase status — the core contract
-
-Every phase has **exactly one** status line:
-
-```
-- Status: <value>
-```
-
-There is no checkbox. The only legal values are, lowercase and hyphenated:
-
-| Value         | Meaning                                                                                                                                 |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `pending`     | Not started.                                                                                                                            |
-| `in-progress` | Started but not yet verified complete. May carry a `- Remaining:` bullet listing what is left (this is how _partial_ work is recorded). |
-| `complete`    | `plan-reflect` verified it: objective met, every deliverable present in the repo, and every `Validation:` criterion re-run and passed.  |
-| `blocked`     | Cannot proceed without a user decision or external prerequisite. Carries a `- Blocked on:` bullet naming what is needed.                |
-
-**Only `complete` counts as done.** For every resume/stop decision, treat
-`pending`, `in-progress`, and `blocked` all as "not done."
-
-### Who sets which transition (single, non-overlapping ownership)
-
-| Transition                | Owner          | When                                                                                                              |
-| ------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `pending → in-progress`   | `plan-phase`   | The moment it begins the phase. This start-marker write is the **only** edit `plan-phase` makes to the plan body. |
-| `in-progress → complete`  | `plan-reflect` | Only when verification earns it.                                                                                  |
-| `in-progress → blocked`   | `plan-reflect` | When the phase cannot finish without outside input. Adds a `- Blocked on:` bullet.                                |
-| add/update `- Remaining:` | `plan-reflect` | When a phase is partially done; it stays `in-progress`.                                                           |
-
-`plan-reflect` never sets a phase back to `pending`. No skill writes any status
-value not in the table above.
-
-### Partial and blocked notes
-
-When `plan-reflect` leaves a phase `in-progress` (partial) or `blocked`, it
-writes the outstanding work **into the plan file** so the next run is resumable
-from the file alone. When that phase later becomes `complete`, `plan-reflect`
-**removes** these notes — a `complete` phase must carry no `Remaining:`/`Blocked
-on:` bullets.
-
-```md
-## Phase 3: API Integration
-
-- Status: in-progress
-- Remaining:
-  - Retry/backoff on the upstream call is not yet implemented.
-- Objective: ...
-```
-
-```md
-## Phase 4: Rollout
-
-- Status: blocked
-- Blocked on:
-  - Need product decision on the default feature-flag state.
-- Objective: ...
-```
-
----
-
-## 4. Multi-plan parent index
-
-The index lists every child with its status. Format (outer fence shown with
-tildes only so the inner Mermaid fence is readable):
+### Multi-plan parent index
 
 ````md
 # [Project Name]
 
+## Goal
+
+- [The global outcome this multi-plan artifact delivers]
+
 ## Overview
 
-[2-3 sentences describing the whole effort across children]
+[2–3 sentences describing the whole effort across children]
 
 ## Global Constraints
 
@@ -207,62 +112,158 @@ tildes only so the inner Mermaid fence is readable):
 
 ```mermaid
 graph LR
-  foo --> bar
-  bar --> baz
+  api --> web
 ```
 
 ## Plans
 
-1. [Plan 1 Name](01-foo.md) — pending
-2. [Plan 2 Name](02-bar.md) — pending
+1. [API migration](plan-01-api/) — owns API contracts and server migration.
+   - Goal: Move the API safely to the new platform contract.
+   - Constraints:
+     - Preserve existing API compatibility.
+   - Depends on: none
+2. [Web migration](plan-02-web/) — owns client integration and browser tests.
+   - Goal: Move the web client to the new platform contract.
+   - Constraints:
+     - Maintain the existing browser support policy.
+   - Depends on: [api]
 
 ## Open Questions
 
-- [Only unresolved items that still matter across plans]
+- [Only unresolved items that still matter across plans. Omit this section if empty.]
 ````
 
-### Index status values
+The parent index owns the child scope map, ordering, dependency graph, and
+recovery brief. Each `## Plans` entry names its child directory and exclusive
+scope, then includes a goal, relevant child-specific constraints, and a
+bare-slug `Depends on:` list. The Mermaid graph must be derived from those
+lists. This metadata must be sufficient to regenerate a missing child directory
+without relying on chat history. It does not hold child status. A child plan's
+progress is derived from the status lines in its phase files when someone
+requests it.
 
-Same four values as a phase, same spelling: `pending`, `in-progress`,
-`complete`, `blocked`.
+An edge `a --> b` means child `b` declares `Depends on: [a]`.
 
-| Index value   | Set by         | When                                                                      |
-| ------------- | -------------- | ------------------------------------------------------------------------- |
-| `pending`     | `plan-multi`   | When the child file is first written.                                     |
-| `in-progress` | `plan-phase`   | When it starts a phase of a child whose index line still reads `pending`. |
-| `complete`    | `plan-reflect` | When **every** phase of that child is `complete`.                         |
-| `blocked`     | `plan-reflect` | When a phase of that child is `blocked`.                                  |
+### Structural validation
 
-### Locating and updating a child's index line (robust matching)
+Before executing or reflecting, fail loudly if an index is malformed: a required
+section is missing, a phase or child link is missing or duplicated, a phase link
+does not resolve, ordering is non-contiguous, a phase filename and heading
+number disagree, or a phase has no legal status line. Never guess an intended
+phase or silently repair a damaged artifact while executing it. `plan-create`
+may repair only the artifact it is currently creating.
 
-Do not match on the delimiter glyph. Match like this:
-
-1. Find the list item in `## Plans` whose markdown link **target** equals the
-   child's filename `<NN>-<child-slug>.md`.
-2. The status is the **final whitespace-separated token** on that line, and is
-   one of the four values.
-3. To update, replace that final token. Leave the rest of the line untouched.
-
-The visible `—` separator is for humans; matching depends only on the link
-target and the trailing status word, so a stray hyphen/en-dash never breaks sync.
-
-### Identifiers
-
-- A child's canonical id is its bare `<slug>` (no `NN-` prefix). `depends_on`
-  lists bare slugs; Mermaid graph nodes use bare slugs.
-- The `NN-<slug>.md` form appears only in filenames and index link targets.
+For a multi-plan parent index, also fail if a child entry lacks its goal,
+constraints, or `Depends on:` list; a dependency names an unknown child; the
+Mermaid graph disagrees with those lists; or a child dependency is not represented
+by at least one phase-level `sibling <slug>` dependency in that child directory.
 
 ---
 
-## 5. Invariants (quick reference)
+## 3. Phase-file schema
 
-- One `- Status:` line per phase; value ∈ {`pending`, `in-progress`, `complete`,
-  `blocked`}; no checkbox.
-- Only `complete` means done.
-- `plan-phase` writes `pending → in-progress` and nothing else in the plan body.
-- `plan-reflect` is the only writer of `complete`/`blocked` and of `Remaining:`/
-  `Blocked on:` notes; it verifies against the repo before writing.
-- Phases are `## Phase <N>:`, numbered from 1, contiguous.
-- Standalone plan path: `<resolved-dir>/<YYYY-MM-DD>-<slug>.md`. Multi: see §1.
-- Child frontmatter is written **with** `---` fences.
-- Index lines are matched by link target + trailing status word.
+Each file linked from `## Phases` has exactly one phase and this format:
+
+```md
+# Phase <N>: [Name]
+
+- Status: pending
+- Objective: [What this phase accomplishes]
+
+## Deliverables
+
+- [Concrete, checkable output]
+
+## Dependencies
+
+- [Phase <N> | sibling <slug> | "none"]
+
+## Validation
+
+- [A runnable check or observable result — not "works correctly"]
+
+## Notes
+
+- [Optional: only what is needed for safe execution]
+
+## Delegation Notes
+
+- [Optional: safe parallel work, local work, and ownership boundaries]
+```
+
+The `# Phase <N>: <Name>` heading and the filename number must agree. A phase
+has exactly one `- Status: <value>` line. The only legal values are `pending`,
+`in-progress`, `complete`, and `blocked`; only `complete` counts as done.
+
+For a partial or blocked phase, `plan-reflect` adds one of these directly below
+the status line:
+
+```md
+- Remaining:
+  - [Specific unfinished work or validation]
+```
+
+```md
+- Blocked on:
+  - [Required user decision or external prerequisite]
+```
+
+A complete phase carries neither note.
+
+### Cross-plan dependencies
+
+`sibling <slug>` is valid only in a child plan. It must name a bare sibling slug
+from the parent `## Plans` list, and that child's parent entry must list the slug
+under `Depends on:`. Every slug in that parent list must be used by at least one
+phase-level sibling dependency.
+
+To verify a sibling dependency, resolve the child plan's parent index at
+`../index.md`. Find the parent entries for the current child and named sibling
+by their `plan-<NN>-<slug>/` link targets. Then read the sibling index and only
+the status lines of its linked phase files. The dependency is satisfied only
+when every sibling phase is `complete`; otherwise stop before changing the
+current phase's start marker. No index receives a derived status.
+
+---
+
+## 4. Status ownership
+
+| Transition or edit | Owner | Rule |
+| --- | --- | --- |
+| `pending → in-progress` | `plan-phase` | Set when execution begins. |
+| `blocked → in-progress` | `plan-phase` | Only after it verifies the recorded blocker is resolved; remove `Blocked on:`. |
+| `in-progress → complete` | `plan-reflect` | Only after every deliverable and validation is verified. |
+| `in-progress → blocked` | `plan-reflect` | Add `Blocked on:` with the missing prerequisite. |
+| `Remaining:` / `Blocked on:` | `plan-reflect` | Keep the phase resumable from its file alone. |
+
+No index mirrors these values. `plan-phase` edits only the selected phase's
+start marker, except that it may clear a resolved `Blocked on:` note while
+resuming a blocked phase. `plan-reflect` edits the selected phase and only
+downstream phase files that need a revision.
+
+---
+
+## 5. Revising phase order
+
+Phase numbers and filenames are stable once a phase is `in-progress`,
+`complete`, or `blocked`. Reflection may insert a new prerequisite only by
+renumbering and renaming later **pending** phase files, then updating their
+headings, index links, and phase-number dependencies together.
+
+If work newly discovered as a prerequisite must precede a started, complete, or
+blocked phase, do not rewrite history. Mark the current plan blocked and create
+or request a follow-up plan.
+
+---
+
+## 6. Invariants
+
+- Every plan index is compact and contains no live status.
+- Every phase link resolves to one phase file, and every phase file is linked
+  exactly once.
+- Phase files are ordered by the `## Phases` list, not by an arbitrary directory
+  scan.
+- Every phase has one legal status line and falsifiable validation criteria.
+- A parent multi-plan index links child directories only; it never synchronizes
+  child execution status.
+- Parent child briefs and phase-level sibling dependencies agree exactly.

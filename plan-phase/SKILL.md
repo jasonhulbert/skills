@@ -1,158 +1,96 @@
 ---
 name: plan-phase
-description: Execute ONE phase of a saved plan — select the phase, inspect the repo, make the change, validate, and hand off to `plan-reflect`. Triggers on "run the next phase", "do phase N", "implement phase X". To run every remaining phase unattended, use `plan-auto` instead.
+description: Execute one phase from a directory-backed plan, loading the compact index and selected phase file only. Use `plan-auto` to run all remaining phases unattended.
 ---
 
 # Plan Phase
 
-Execute one phase from a saved plan file.
+Execute exactly one phase from a saved plan directory.
 
-This is the execution step of the pipeline:
-`plan-create` -> `plan-phase` -> `plan-reflect`
+Pipeline: `plan-create` -> `plan-phase` -> `plan-reflect`.
 
-**Read the plan file contract first:** `../plan-shared/PLAN-CONTRACT.md` defines how to find the plan, the phase `Status:` values and who owns each transition, and the parent-index rules. The rules below are specific to *executing* a phase and assume that contract. If anything here seems to disagree with the contract, the contract wins.
+Read `../plan-shared/PLAN-CONTRACT.md` first. It defines plan resolution,
+phase-file status ownership, and safe phase-order revision. The contract wins.
 
-Treat the plan as the contract for what must be accomplished. Use the repo to determine how to do it. Run exactly one phase — to run the whole plan unattended, that is `plan-auto`'s job.
+## Inputs and selection
 
-## Inputs
+Accept a plan directory, its `index.md`, or a phase-file path. Resolve the
+containing plan directory and read its index. A multi-plan parent index is not
+executable; ask the user for a child plan. A legacy monolithic plan is
+unsupported and must be manually migrated.
 
-Expected inputs are:
+Validate the index and linked phase-file structure under contract §2 before
+selecting a phase. If it is malformed, stop and name the broken path or schema
+rule; do not guess or repair an existing plan during execution.
 
-- the plan file path, or enough context to find it (see contract §1 for the naming convention)
-- the target phase — selected by the deterministic rule below
-- the current repo state
+Select the named phase when the user specifies one. Otherwise, follow the
+ordered `## Phases` links and read each phase's status line until finding the
+first status that is not `complete`. Do not load full phase bodies merely to
+select a phase. Never start a phase whose declared earlier-phase dependency is
+not complete.
 
-### Which phase to run (deterministic)
+## Rules
 
-1. If the user named a phase explicitly, run that one.
-2. Otherwise, run the **first phase whose `Status:` is not `complete`**, reading top to bottom.
-3. Never skip ahead of an incomplete dependency: if the selected phase's `Dependencies:` reference an earlier phase that is not `complete`, stop and ask rather than running out of order.
-
-If the plan file is missing, or step 1–2 is genuinely ambiguous, ask the user. Do not ask the user to restate technical context that is already in the repo or plan.
-
-## Critical Rules
-
-- Implement the phase directly in the codebase. Do not spend the turn filling out templates.
-- Ask questions only for blocking ambiguity, unsafe changes, or major product decisions.
-- **Prefer subagents for isolated workstreams.** When part of the phase is genuinely separable, run it as parallel subagents rather than serially — see "Delegating isolated workstreams." Keep critical-path, tightly coupled, or high-context work in the main agent, and never block on delegation.
-- **Stay in this phase's scope.** Change only what this phase requires. Do not implement deliverables that belong to other phases, even if convenient — that corrupts `plan-reflect`'s per-phase verification. Note out-of-scope problems for reflection instead of fixing them.
-- **Do not start a phase with unmet dependencies.** If the phase's `Dependencies:` name an earlier phase that is not `complete`, stop and ask rather than building on missing prerequisites.
-- Whenever feasible, keep the repo in a working state while editing.
-- Run validation that is appropriate for the change. Do not claim success without verification.
-- If the best implementation materially deviates from the plan, explain the deviation in the final summary so `plan-reflect` can update the plan.
-- **Phase-body edits you may make are limited to the `Status:` start marker.** Set the phase from `pending` to `in-progress` when you begin (contract §3). Do not set `complete`/`blocked` or edit other phases — `plan-reflect` owns those.
-- If the plan is a child of a multi-plan artifact (has `parent_plan` frontmatter), update the parent index status when you start the first phase only (see step 1c). Do not touch the parent index on subsequent phases — `plan-reflect` owns the `complete` transition.
-
-## Delegating isolated workstreams
-
-Prefer running genuinely isolated work as parallel subagents instead of doing everything serially. Strong candidates:
-
-- **Read-only investigation** — mapping call sites, surveying tests, gathering context. Parallel explorers can't conflict.
-- **Disjoint edits** — non-overlapping files/modules with clear ownership. If two streams might touch the same file, give each subagent its own git worktree (Agent `isolation: "worktree"`) so they can't collide, then integrate.
-- **Independent verification** — a fresh-context subagent that checks the result against the phase's Validation criteria, with no stake in having written it.
-
-Keep in the main agent: the critical path, tightly coupled changes, anything needing full conversation context, and the final integration + validation.
-
-To keep delegation from adding divergence:
-
-- Each subagent gets a **self-contained brief** (it does not share your context): the goal, the files it owns, what to return, what not to touch.
-- You own integration and validation — verify subagent output, don't trust it.
-- Don't delegate trivial work to look busy; if the phase is one tight change, just make it.
-- If subagents aren't available here, continue locally — never block on delegation.
+- Implement the selected phase directly. Do not fill out templates.
+- Stay within the selected phase's scope.
+- Ask only for blocking ambiguity, unsafe/destructive work, or a major product
+  decision.
+- Prefer bounded parallel investigation, disjoint edits, or independent
+  verification when they are genuinely worthwhile. Keep integration and final
+  validation local.
+- Run the phase's stated validation first, then relevant supplemental checks.
+- The only plan edit made here is the selected phase's start marker:
+  `pending → in-progress`, or `blocked → in-progress` after the blocker is
+  verified resolved. Do not mark a phase complete or blocked; `plan-reflect`
+  owns those results.
+- Do not update a plan or multi-plan index for execution status. Indexes never
+  mirror live status.
 
 ## Workflow
 
-### 1. Load the plan and select the phase
+### 1. Load and start
 
-- Read the plan file.
-- Select the target phase using the deterministic rule in Inputs.
-- Extract its objective, deliverables, dependencies, and validation criteria.
-- Confirm every item in its `Dependencies:` is actually satisfied in the repo. If a declared dependency is unmet, do **not** start — stop and ask (see "When To Stop And Ask").
+Read the compact plan index and the selected phase file. Extract its objective,
+deliverables, dependencies, validation, and execution notes. Confirm declared
+dependencies in the repository and other phase files. For each `sibling <slug>`
+dependency, follow contract §3's parent-index lookup and verify every linked
+phase in that sibling plan is complete. If the child directory is not in the
+required multi-plan layout, the parent entry does not declare the sibling, or
+the sibling is incomplete, stop before writing a start marker. If safe to
+proceed, set the selected phase's status to `in-progress`; if it is already in
+progress, leave it unchanged and inspect existing work before repeating anything.
 
-### 1b. Mark the phase in-progress
-
-Set the selected phase's `- Status:` line from `pending` to `in-progress` (contract §3). This is the start marker, and the only edit to the phase body you make. (Edit the file in place) If the phase is already `in-progress` — e.g. a prior run died mid-phase — leave it and re-examine what is actually done before redoing work.
-
-### 1c. Update parent index (if applicable)
-
-If the plan file has `parent_plan` frontmatter AND this child's line in the parent index currently reads `pending`:
-
-- Resolve the parent index path relative to the child plan file (typically `./index.md` in the same directory).
-- Read the parent index.
-- In the `## Plans` list, locate this child's line and update its trailing status word to `in-progress`, following the contract's line-matching grammar (match by link target, replace the trailing token).
-- Write the updated index.
-
-If there is no `parent_plan` frontmatter, skip this step.
-
-If the parent index cannot be read, or the child line cannot be located, note it in the handoff summary and continue — execution must not block on parent-index bookkeeping.
+If the selected phase is `blocked`, read its `Blocked on:` note. Resume it only
+after verifying that prerequisite is resolved; then set it to `in-progress` and
+remove the resolved note. Do not treat a request to rerun the phase as evidence
+that a blocker disappeared. Ask when resolution cannot be verified.
 
 ### 2. Inspect before editing
 
-- Read the relevant code paths and tests.
-- Identify the smallest safe change set that satisfies the phase.
-- Identify whether any sidecar work can be delegated safely, such as bounded exploration, disjoint file edits, or independent verification.
-- If there is blocking ambiguity, ask concise questions. Otherwise proceed.
+Read the relevant code, tests, and immediate integration points. Identify the
+smallest safe change set and any bounded work worth delegating.
 
 ### 3. Execute
 
-- If delegation is available and worthwhile, assign only concrete, bounded subtasks with clear file ownership or a narrowly defined read-only goal.
-- Make the code changes directly.
-- Add or update tests when the phase changes behavior.
-- Update docs or config only when the phase actually requires it.
+Make only the changes needed by this phase. Add or update behavior-focused tests
+when behavior changes. Update documentation or configuration only when the
+phase requires it.
 
 ### 4. Validate
 
-First run the phase's own `Validation:` criteria from the plan file — that is the
-yardstick `plan-reflect` will re-check against, so validating against anything
-else risks a mismatch. Then add any other relevant checks:
+Run the phase file's `## Validation` criteria first. Then run relevant targeted
+tests, lint/typecheck, builds, smoke checks, or named manual verification. Give
+the actual commands and results. An un-runnable validation is not a pass.
 
-- targeted tests
-- lint or typecheck
-- build or smoke checks
-- manual verification steps when automation is not available
+### 5. Handoff
 
-Report the actual command and its result, not "checks passed." If validation
-cannot be run, say exactly why — an un-runnable check is not a pass.
+Leave the phase `in-progress`. Report the plan directory, selected phase file,
+concrete changes, validation, deviations, and the recommendation to run
+`plan-reflect` on that same phase.
 
-### 5. Prepare the handoff
+## When to stop and ask
 
-Leave the phase `in-progress`. Do not set it `complete` or `blocked` — `plan-reflect` owns those transitions and writes them only after verifying the work against the repo. (If the user explicitly asks you to combine execution and reflection, then follow `plan-reflect`'s rules exactly when setting the final status.)
-
-## Response Format
-
-Keep the response short and operational:
-
-```md
-Phase executed: [phase name]
-
-Outcome (a claim for plan-reflect to verify, not a final status):
-- [implemented / partially implemented / blocked]
-
-Files changed:
-- [path] - [what changed, concretely]
-
-Validation:
-- [command or check] - [result]
-
-Deviations from plan:
-- [only if applicable]
-
-Open issues:
-- [only if applicable]
-
-Recommended next step:
-- Run `plan-reflect` on [phase name]
-```
-
-## When To Stop And Ask
-
-Stop and ask the user if:
-
-- the phase depends on a missing prerequisite the plan got wrong
-- a major product or UX choice is unresolved
-- implementation would require risky migration or destructive changes
-- the codebase strongly suggests the plan is no longer valid
-
-If delegation or subagent utilization is unavailable in the current environment, continue locally rather than blocking on it.
-
-Otherwise, proceed and make the phase real.
+Stop before editing if a prerequisite is missing, a major product decision is
+unresolved, the phase is destructive or irreversible, or the repository makes
+the phase invalid. If delegated work is unavailable, continue locally rather
+than blocking.
