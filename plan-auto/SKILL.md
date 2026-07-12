@@ -38,13 +38,17 @@ full phase file only when it is about to run.
   request explicit go-ahead or the missing resolution.
 - Run one plan directory only. Do not chain sibling plans.
 - Run phases in index order and reflect after every one.
+- Require `plan-phase` to reach its terminal outcome before reflection. Never
+  use reflection to turn a voluntarily partial implementation into a normal
+  stopping point.
 - Progress is monotonic: the count of not-complete phase files must strictly
   decrease after each iteration. Never rerun the same phase automatically.
 - Keep the repository working between phases.
 - Add no run log, status sidecar, or index status summary. Phase files are the
   only live-state source.
-- Stop cleanly on a blocker, incomplete reflection, failed validation, no
-  progress, or destructive work needing sign-off.
+- Stop cleanly only on a concrete blocker, failed required validation after
+  in-scope remediation is exhausted, no progress caused by a concrete blocker,
+  or destructive work needing sign-off.
 
 ## Stop conditions
 
@@ -52,7 +56,9 @@ After a phase is executed, complete reflection before stopping. Halt when:
 
 1. The next phase has a blocking ambiguity, unmet prerequisite, major product
    decision, or destructive/irreversible action.
-2. Reflection leaves the phase `in-progress` or `blocked`.
+2. Reflection leaves the phase `in-progress` or `blocked` because it identifies
+   a concrete blocker or failed criterion that cannot be resolved safely within
+   the phase. Known safe remaining work means return to `plan-phase`, not stop.
 3. Required validation is not green or the repository is not working.
 4. The count of non-complete phase files did not decrease.
 5. Reflection changes the next phase so substantially that it is no longer
@@ -78,9 +84,13 @@ For each next incomplete phase in index order:
 1. Emit `Phase N: [name] — starting.`
 2. Run the full `plan-phase` behavior on that phase file.
 3. Run the full `plan-reflect` behavior on that phase file.
-4. Re-read the index and status lines. Check repository health, the reflected
+4. If reflection finds safe in-scope remaining work without a concrete blocker,
+   run `plan-phase` again on the same phase and repeat reflection. This retry is
+   continued execution, not a new phase iteration, and does not violate the
+   no-rerun/no-progress rule.
+5. Re-read the index and status lines. Check repository health, the reflected
    phase status, monotonic progress, and whether the next phase remains safe.
-5. Emit `Phase N: [name] — complete.` or a one-line stop reason.
+6. Emit `Phase N: [name] — complete.` or a one-line concrete stop reason.
 
 If reflection inserted and renumbered pending phases, treat the refreshed index
 as authoritative before choosing the next phase.

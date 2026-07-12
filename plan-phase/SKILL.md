@@ -31,6 +31,10 @@ not complete.
 ## Rules
 
 - Implement the selected phase directly. Do not fill out templates.
+- Execute the phase to its terminal outcome in the same invocation. Continue
+  while any safe, in-scope deliverable or validation remains. A clean
+  intermediate checkpoint, passing subset of tests, documented remaining work,
+  large scope, elapsed time, or turn boundary is not a stopping condition.
 - Stay within the selected phase's scope.
 - Ask only for blocking ambiguity, unsafe/destructive work, or a major product
   decision.
@@ -75,6 +79,12 @@ Make only the changes needed by this phase. Add or update behavior-focused tests
 when behavior changes. Update documentation or configuration only when the
 phase requires it.
 
+After each coherent work increment, compare the repository against every
+deliverable and validation item in the phase file. If any item remains and no
+concrete stop condition below applies, continue executing. Do not convert known
+remaining work into a handoff merely because the repository is currently clean
+or a useful subset is complete.
+
 ### 4. Validate
 
 Run the phase file's `## Validation` criteria first. Then run relevant targeted
@@ -83,13 +93,37 @@ the actual commands and results. An un-runnable validation is not a pass.
 
 ### 5. Handoff
 
-Leave the phase `in-progress`. Report the plan directory, selected phase file,
-concrete changes, validation, deviations, and the recommendation to run
-`plan-reflect` on that same phase.
+Before handing off, perform a completion gate:
+
+1. Account for every deliverable with a concrete repository artifact.
+2. Account for every validation with an actual command or observable result.
+3. Confirm no safe, in-scope implementation or validation work remains.
+4. If work remains, name the exact concrete stop condition that prevents it.
+
+If no stop condition applies, return to Execute instead of handing off.
+
+Leave the phase `in-progress` because `plan-reflect` owns the result transition.
+Report the plan directory, selected phase file, concrete changes, validation,
+deviations, and the recommendation to run `plan-reflect` on that same phase.
+When stopped by a blocker, distinguish completed work from blocked work and name
+the evidence that makes the blocker concrete.
 
 ## When to stop and ask
 
-Stop before editing if a prerequisite is missing, a major product decision is
-unresolved, the phase is destructive or irreversible, or the repository makes
-the phase invalid. If delegated work is unavailable, continue locally rather
-than blocking.
+Stop only when one of these conditions is concrete and prevents further safe,
+in-scope progress:
+
+- a declared prerequisite is missing or incomplete;
+- a major product decision is unresolved and different answers would materially
+  change the implementation;
+- the next required action is destructive, irreversible, or requires approval;
+- required external access, hardware, credentials, or user-provided input is
+  unavailable and no local substitute can satisfy the validation; or
+- repository evidence makes the phase invalid as written.
+
+Before stopping, exhaust safe in-scope alternatives and complete all independent
+work that is not blocked. State the blocking item, the evidence for it, and the
+exact work it prevents. Tool friction, a failed first attempt, unavailable
+delegation, large scope, context pressure, elapsed time, a clean checkpoint, or
+partial validation are not blockers. If delegated work is unavailable, continue
+locally.
