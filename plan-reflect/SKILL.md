@@ -17,8 +17,7 @@ contract wins.
 
 Accept a plan directory, its `index.md`, or the phase-file path, plus a phase
 name or number if necessary. Resolve the plan directory, read its compact index
-and target phase file, then inspect the repository. A legacy monolithic plan is
-unsupported and must be manually migrated.
+and target phase file, then inspect the repository.
 
 Validate the index and linked phase-file structure under contract §2 before
 making a status decision. If it is malformed, stop and report the broken path or

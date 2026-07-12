@@ -19,8 +19,7 @@ status. The contract wins.
 
 Accept a plan directory, its `index.md`, or a phase-file path and resolve the
 plan directory. Do not operate on a multi-plan parent index; ask the user to
-choose a child plan. A legacy monolithic plan is unsupported and requires
-manual migration.
+choose a child plan.
 
 Validate the index and linked phase-file structure under contract §2 before
 starting. If it is malformed, stop and report the exact broken path or schema

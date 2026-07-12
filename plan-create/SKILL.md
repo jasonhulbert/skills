@@ -48,7 +48,6 @@ appear in at least one phase dependency, and no phase may name another sibling.
 - Make every validation criterion falsifiable.
 - Keep shared context in `index.md`; keep execution detail and status in the
   corresponding phase file.
-- Do not create or accept a legacy single-file plan. Ask the user to migrate it.
 
 ## Workflow
 

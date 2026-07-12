@@ -16,8 +16,7 @@ phase-file status ownership, and safe phase-order revision. The contract wins.
 
 Accept a plan directory, its `index.md`, or a phase-file path. Resolve the
 containing plan directory and read its index. A multi-plan parent index is not
-executable; ask the user for a child plan. A legacy monolithic plan is
-unsupported and must be manually migrated.
+executable; ask the user for a child plan.
 
 Validate the index and linked phase-file structure under contract §2 before
 selecting a phase. If it is malformed, stop and name the broken path or schema

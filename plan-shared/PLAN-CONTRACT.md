@@ -5,9 +5,7 @@ single source of truth for its layout, schemas, and status ownership. If a
 skill disagrees with this contract, fix the skill.
 
 Each phase lives in its own file. Skills load the compact plan index and only
-the phase files needed for their work. Do not use, create, or accept the former
-single-file plan layout; users must migrate those plans before using these
-skills.
+the phase files needed for their work.
 
 ---
 
@@ -43,8 +41,7 @@ Directory names never end in `.md`. Markdown suffixes are reserved for files.
 `plan-phase`, `plan-reflect`, and `plan-auto` accept a plan directory, that
 directory's `index.md`, or a phase-file path. Resolve a phase-file path to its
 containing plan directory. A multi-plan parent index is not executable; ask the
-user to identify a child plan. If a supplied path is a legacy monolithic plan
-file, stop and report that manual migration is required.
+user to identify a child plan.
 
 ---
 
