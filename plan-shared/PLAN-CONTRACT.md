@@ -65,7 +65,8 @@ optional `## Open Questions` may follow.
 - [Phase <N> | sibling <slug> | none]
 
 ## Validation
-- [Falsifiable check]
+- [Required] [Falsifiable completion check]
+- [Supplemental] [Optional confidence-building check]
 
 ## Notes
 - [Optional execution context]
@@ -87,6 +88,28 @@ status when needed:
 ```
 
 A complete phase carries neither note.
+
+For a validation concern, make the blocker actionable:
+
+```md
+- Blocked on:
+  - Validation concern: [criterion]
+  - Expected: [required result]
+  - Actual: [observed result]
+  - Evidence: [repository or environment evidence]
+  - Approaches tried: [distinct grounded approaches]
+  - Decision needed: [clarification, approval, or criterion revision]
+```
+
+Validation entries should identify a command or observable result and its
+expected outcome. They must test the phase outcome, not prescribe an
+implementation unless that implementation is itself a requirement. Keep the
+required set minimal and avoid duplicate checks. Entries may be labeled
+`[Required]` or `[Supplemental]`; unlabeled entries in existing plans are
+treated as required for compatibility. Required entries gate completion.
+Supplemental entries must still be run when practical and reported, but their
+failure does not by itself prevent completion unless it reveals a defect or
+contradicts a deliverable.
 
 ## Dependencies
 
@@ -116,6 +139,26 @@ Before execution or reflection, verify the applicable schema, link integrity,
 numbering, legal statuses, and dependency consistency. Stop and name malformed
 artifacts; do not guess or silently repair them.
 
+## Validation failures
+
+A failed validation starts triage, not an open-ended retry loop. Classify the
+failure as an implementation defect, a tool or environment problem, or a
+validation concern. A retry is justified only when the input, implementation,
+environment, or failure hypothesis changes; never repeat an unchanged failing
+command or approach. Pursue distinct grounded alternatives when new evidence
+supports them. If two materially distinct approaches produce the same failure,
+or the criterion is ambiguous, stale, implementation-prescriptive,
+unrunnable, or disproportionate to the phase outcome, stop remediation and
+surface a validation concern.
+
+A validation concern is a permitted blocker when repository evidence supports
+it and the phase cannot be completed without weakening, redefining, or
+otherwise deciding the criterion. Record it under `Blocked on:` with the
+criterion, expected and actual results, evidence, approaches tried, and the
+specific decision or clarification needed. Do not silently weaken a required
+criterion, replace it with an easier check, or mark the phase complete to avoid
+the concern.
+
 ## Autonomous execution
 
 When the user requests execution and reflection together, or invokes
@@ -127,8 +170,8 @@ When the user requests execution and reflection together, or invokes
 3. `complete` finishes. A valid `blocked` result stops. `in-progress` returns
    immediately to `plan-phase` for remediation.
 
-Repeat without a retry limit while safe approaches remain. Failed validation,
-tool friction, elapsed time, a clean checkpoint, or useful partial progress are
-not blockers. Do not present `Remaining:` as a handoff or mark the surrounding
-operation complete. A standalone reflection request verifies only and does not
-authorize implementation.
+Continue while safe, evidence-based in-scope work remains. Do not retry an
+unchanged failure or present `Remaining:` as a handoff when a valid validation
+concern has been established. Failed validation on its own is not a blocker;
+validated criterion ambiguity or mismatch is. A standalone reflection request
+verifies only and does not authorize implementation.
