@@ -1,69 +1,52 @@
 ---
 name: plan-phase
-description: Execute one phase from a directory-backed plan to its implementation and validation boundary. Use plan-auto to run every remaining phase.
+description: Execute one ready phase from an existing directory-backed plan through implementation, validation, terminal status, and execution evidence. Use when the user asks to run a specific saved-plan phase; use plan-auto for all ready phases.
 ---
 
 # Plan Phase
 
 Read `../plan-shared/PLAN-CONTRACT.md` first and follow it.
 
-## Select and start
+Resolve the plan, validate or deterministically repair its structure, and load
+the named phase. Otherwise select the first ready non-complete phase in index
+order. Verify its declared phase and sibling dependencies. Resume `blocked` only
+after verifying the recorded condition is resolved; resume `in-progress` from
+its `Remaining:` note and execution history without repeating completed work.
 
-Resolve the plan, validate its structure, and load the named phase. Otherwise
-select the first linked phase not marked `complete`. Verify its dependencies.
+Set the phase to `in-progress`, remove a resolved blocker, and inspect the
+relevant code, tests, callers, later coordination boundaries, and prior evidence
+once. Choose a sound approach and implement only the work needed for the phase's
+outcome. Use bounded delegation for genuinely disjoint work when helpful, while
+keeping integration and terminal validation local. Add behavior-focused tests
+when behavior changes.
 
-Set `pending` to `in-progress`. Resume `blocked` only after verifying its
-recorded blocker is resolved; then clear `Blocked on:`. Leave an existing
-`in-progress` status unchanged and inspect prior work before repeating it.
+After coherent increments, compare the repository with the objective,
+deliverables, coordination invariants, and relevant risks. Classify failures as
+implementation defects, tool or environment problems, or validation concerns
+before changing code. Continue while safe in-scope work remains. Request
+available approval or escalation instead of stopping merely because permission
+is required. Never repeat an unchanged failing command or hypothesis.
 
-## Execute
+Account for every deliverable and gate. Alternative evidence may satisfy a gate
+only when it directly observes the same material behavior or failure mode; name
+that equivalence in the execution history. Inference alone cannot satisfy a
+runnable executable-behavior gate. Evidence checks create work only when they
+reveal a material defect or change confidence in the outcome.
 
-Implement only the selected phase. Inspect relevant code and integration points,
-choose a sound approach, and add behavior-focused tests when behavior changes.
+Finish in one pass when possible:
 
-After each coherent increment, compare the repository with the objective,
-deliverables, and relevant risks. Do not re-evaluate every validation item after
-every increment. When a check fails, classify it before changing code:
-implementation defect, tool or environment problem, or validation concern. A
-failed gate may require remediation; an evidence check does not create work
-unless it reveals a material defect or changes confidence in the goal.
-Continue while safe in-scope work remains. Ask only when a missing prerequisite,
-consequential unresolved decision, approval-dependent or destructive action,
-unavailable external requirement, or invalid phase prevents further progress.
-Exhaust independent work and evidence-based alternatives first, but never
-repeat an unchanged failing command or approach.
+- mark `complete` when the objective and deliverables exist, every gate has
+  proportionate direct evidence, and no material defect or constraint violation
+  remains;
+- leave `in-progress` with exact `Remaining:` work only when execution is
+  interrupted despite safe work remaining; or
+- mark `blocked` only when a concrete condition prevents further safe in-scope
+  progress and record the actionable handoff required by the contract.
 
-Gather gate evidence at appropriate checkpoints, usually after implementation
-stabilizes. Accept equivalent evidence when it establishes the same material
-outcome. Run evidence checks when they are cheap and decision-changing; do not
-create implementation work solely to satisfy an evidence list. An unrun gate is
-an evidence gap, not an automatic failure, when other proportionate evidence
-establishes the outcome. Report unrun checks and residual uncertainty honestly.
-
-## Handoff
-
-Account for every deliverable with repository evidence and every gate with an
-actual result or explicit evidence gap. Report evidence checks that were run
-and any material residual uncertainty. If the objective is achieved and only
-non-material evidence gaps remain, continue to reflection rather than doing more
-work solely to close those gaps. If the criterion itself is the concrete
-blocker, leave the structured evidence for `plan-reflect` to record as a
-validation concern; do not silently relax it.
-
-Leave status `in-progress`; `plan-reflect` owns the result. Report changes,
-validation, deviations, and any evidenced blocker. In an autonomous execution
-cycle, proceed directly to reflection and resume this skill immediately if
-reflection records `Remaining:`.
-
-When progress is blocked, make the handoff human-actionable: state the specific
-help requested, why it unblocks the phase, and the exact action to resume. For a
-decision or approval, give a recommended default and viable alternatives when
-they exist. Do not report only a cryptic error or "please advise".
-
-Stop only when a concrete condition prevents safe, in-scope progress. This
-includes a material acceptance condition for which no proportionate evidence
-exists, or a gate that repository evidence shows is ambiguous, stale,
-implementation-prescriptive, disproportionate, or otherwise incompatible with
-the phase outcome after distinct grounded alternatives were tried. A failed
-first attempt, tool friction, an unrun evidence check, elapsed time, or partial
-validation is not enough.
+Append one execution-history entry with the complete status-transition sequence,
+baseline,
+changes, gate-by-gate results, evidence equivalence, and deviations. Leave
+forward-looking note extraction to `plan-reflect`; do not perform a second
+inspection pass or restate the execution report in `## Notes`. Report the
+terminal status, changed files, actual validation, and any blocker or residual
+uncertainty concisely.

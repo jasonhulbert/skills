@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Auto Multi"
+  short_description: "Execute an auditable multi-plan graph"
+  default_prompt: "Use $plan-auto-multi to execute this saved multi-plan to completion."

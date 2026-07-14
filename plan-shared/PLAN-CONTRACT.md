@@ -1,26 +1,39 @@
 # Plan Directory Contract
 
-This contract defines the shared artifact and execution invariants for
-`plan-*` skills. It wins over individual skills.
+Contract version: `plan-directory/v2`.
 
-## Layout
+This contract defines shared artifacts and execution invariants for the
+`plan-*` suite. It wins over individual plan-skill instructions, while system,
+developer, and user instructions retain their normal higher priority.
+
+## Layout and publication
 
 A standalone plan lives at `<root>/<YYYY-MM-DD>-<slug>/` with `index.md` and
 `phase-<NN>-<slug>.md` files. Use an existing workspace `plans/` root when the
-user does not specify one. Never overwrite an existing plan; suffix its
-directory with `-2`, `-3`, and so on.
+user does not specify one. Never overwrite an existing plan; choose a `-2`,
+`-3`, or later suffix before writing.
 
 A multi-plan parent contains `index.md` and topologically ordered child
-directories named `plan-<NN>-<slug>/`. Each child is an ordinary plan. Its bare
-slug is its dependency identifier.
+directories named `plan-<NN>-<slug>/`. Each child is an ordinary plan. Its unique
+bare slug is its dependency identifier. A multi-plan parent is executable only
+through `plan-auto-multi`, never as a single child plan.
 
-Execution skills accept a plan directory, its index, or a phase file. A
-multi-plan parent is not directly executable.
+Build a multi-plan tree in a hidden temporary sibling directory on the same
+filesystem as its final destination. Create the parent and every child there,
+validate the complete tree, then atomically rename it to the unused final path.
+Never publish a parent with missing children. If interrupted before publication,
+leave the final path absent and report the temporary path and resume action.
+
+Execution skills accept a plan directory, its index, or a phase file.
 
 ## Plan index
 
 ```md
 # [Name]
+
+- Contract: plan-directory/v2
+- Created: [ISO-8601 timestamp]
+- Repository baseline: [commit and dirty summary | unavailable]
 
 ## Goal
 - [Outcome]
@@ -36,19 +49,29 @@ multi-plan parent is not directly executable.
 
 ## Open Questions
 - [Optional cross-phase question]
+
+## Revision History
+- None yet.
 ```
 
-Phase links define order. They must be contiguous, unique, and resolve exactly.
+Phase links define stable display order and selection priority, not implicit
+execution dependencies. Links must be contiguous, unique, and resolve exactly.
 Every phase file is linked exactly once. Indexes never contain live status.
+
+Append a revision-history entry when assumptions, questions, phase order,
+dependencies, coordination boundaries, or acceptance criteria change. Record the
+timestamp, changed plan content, repository evidence, and reason. Do not record
+ordinary code changes here.
 
 ## Multi-plan index
 
-A parent index contains `#`, `## Goal`, `## Overview`, `## Global Constraints`,
-`## Assumptions`, `## Plan Dependency Graph`, and `## Plans`. Each plan entry
-links its child directory and records scope, goal, constraints, and `Depends
-on:` using bare slugs. An edge `a --> b` means `b` depends on `a`. The entries,
-Mermaid graph, and child phase-level sibling dependencies must agree. An
-optional `## Open Questions` may follow.
+A parent index contains the same contract, creation, baseline, goal,
+constraints, assumptions, open-question, and revision-history metadata plus
+`## Overview`, `## Plan Dependency Graph`, and `## Plans`. Each plan entry links
+its child directory and records exclusive scope, affected areas, interfaces,
+goal, constraints, and `Depends on:` using unique bare slugs. An edge `a --> b`
+means `b` depends on `a`. Entries, the Mermaid graph, and child phase-level
+sibling dependencies must agree. The parent contains no live child status.
 
 ## Phase file
 
@@ -64,17 +87,24 @@ optional `## Open Questions` may follow.
 ## Dependencies
 - [Phase <N> | sibling <slug> | none]
 
+## Coordination
+- Affected areas: [files, modules, services, or none]
+- Interfaces and invariants: [contracts later work must preserve or none]
+
 ## Validation
-- [Gate] [Material acceptance check]
-- [Evidence] [Optional confidence-building check]
+- [Gate] [Command or observable result] — Expected: [result]
+- [Evidence] [Optional confidence-building check] — Expected: [result]
 
 ## Notes
-- [Optional execution context]
+- [Only durable context useful to later phases or sibling plans]
+
+## Execution History
+- None yet.
 ```
 
 The heading and zero-padded filename number must agree. Each phase has exactly
 one status: `pending`, `in-progress`, `complete`, or `blocked`. Only `complete`
-is done. `plan-reflect` places one resumability note directly below a nonterminal
+is done. A nonterminal phase carries one resumability note directly below its
 status when needed:
 
 ```md
@@ -90,123 +120,130 @@ status when needed:
   - Resume with: [exact next agent action after help arrives]
 ```
 
-A complete phase carries neither `Remaining:` nor `Blocked on:` note. It may
-retain a concise `## Notes` entry describing a non-material verification gap.
+A complete phase carries neither note. Every blocker must request the smallest
+useful human action, explain why it unblocks work, and give the exact resume
+action. Include a recommended default and viable alternatives for decisions. If
+no human action can clear it, state the external change and resume condition.
 
-For a validation concern, make the blocker actionable:
+For a validation concern, also record the criterion, expected and actual
+results, repository evidence, grounded approaches tried, and why the criterion
+requires human clarification or revision. Do not label a difficult defect a
+validation concern merely because multiple fixes failed.
+
+## Execution history
+
+Replace `- None yet.` with append-only entries:
 
 ```md
-- Blocked on:
-  - Validation concern: [criterion]
-  - Expected: [required result]
-  - Actual: [observed result]
-  - Evidence: [repository or environment evidence]
-  - Approaches tried: [distinct grounded approaches]
-  - Human help requested: [clarification, approval, or criterion revision]
-  - Why this unblocks: [decision or uncertainty it resolves]
-  - Resume with: [exact next agent action after help arrives]
+### [ISO-8601 timestamp] — execution
+- Transition: [status sequence, such as pending -> in-progress -> complete]
+- Baseline: [commit and relevant dirty state | unavailable]
+- Changes: [files or artifacts changed | none]
+- Validation:
+  - [Gate or Evidence criterion] — [observed pass | observed fail | not run | uncertain] via [command or observation]
+- Equivalent evidence: [original gate, same failure mode observed, and rationale | none]
+- Deviations: [plan deviation and reason | none]
 ```
 
-Every blocked phase must make the human handoff actionable. Ask for the
-smallest useful action, such as a decision, file or input, access, approval, or
-external change. Explain why that action unblocks the phase and what the agent
-will do next. When the blocker presents a choice, include a recommended default
-and the viable alternatives or tradeoffs. Do not end with a cryptic blocker or
-a generic request to "advise". If no human action can clear the blocker, state
-the external change required and the condition for resuming.
+History is append-only. Correct an inaccurate prior entry with a new execution
+entry; do not rewrite it. `## Notes` is forward-looking context, not an
+execution log.
 
-Validation entries should identify a command or observable result and its
-expected outcome. They must test the phase outcome, not prescribe an
-implementation unless that implementation is itself a requirement. Use the
-fewest checks that would change the decision to accept the phase. A `[Gate]`
-must protect a material correctness, safety, compatibility, data-integrity, or
-explicit user-acceptance condition. An `[Evidence]` check increases confidence
-but does not create work or block completion by itself. A gate may be satisfied
-by equivalent evidence; the named command is not the goal.
+## Validation integrity
 
-Entries may use the legacy labels `[Required]` and `[Supplemental]`. Treat
-`[Required]` as `[Gate]` and `[Supplemental]` as `[Evidence]`. For unlabeled
-legacy entries, use judgment: promote an entry to a gate only when it is
-material and decision-changing; otherwise treat it as evidence. Never invent a
-hard gate merely because a check appears in the file. Record non-material
-verification gaps under `## Notes` without adding `Remaining:` or `Blocked on:`.
+Validation must test the phase outcome rather than prescribe an implementation
+unless that implementation is itself required. Use the fewest checks that would
+change acceptance. A `[Gate]` protects a material correctness, safety,
+compatibility, data-integrity, or explicit acceptance condition. `[Evidence]`
+increases confidence but does not create work or block completion by itself.
 
-Completion is outcome-first: the objective and deliverables must be achieved,
-material acceptance conditions must have proportionate evidence, and no
-material defect or constraint violation may remain. A check is evidence for
-that decision, not a competing objective.
+Every gate must have a gate-by-gate result in execution history. A named command
+is evidence rather than the objective, but alternative evidence satisfies it
+only when it directly observes the same material behavior or failure mode. State
+the equivalence rationale. Inference alone cannot satisfy a runnable executable-
+behavior gate. If neither the named check nor direct equivalent evidence is
+available, the phase retains a material evidence gap.
 
-Report evidence with a calibrated status such as `observed`, `inferred`, `not
-run`, or `uncertain`. Reserve `pass` for an observed result that matches the
-expected outcome. Do not turn an unavailable command into a claim that the
-underlying behavior is correct.
+Legacy `[Required]` and `[Supplemental]` labels mean `[Gate]` and `[Evidence]`.
+For unlabeled legacy entries, promote only material decision-changing checks.
+Never invent a gate merely because a command appears in the file.
 
-## Dependencies
+Report evidence as `observed pass`, `observed fail`, `not run`, or `uncertain`.
+Do not claim a check passed when it was skipped or inferred.
 
-Earlier phase dependencies require `complete`. A `sibling <slug>` dependency is
-valid only in a multi-plan child whose parent entry declares that slug. Verify a
-sibling by reading its index and linked phase status lines; every phase must be
-`complete`. Every parent dependency must appear in at least one child phase.
+A failed gate starts triage. Classify it as an implementation defect, tool or
+environment problem, or validation concern. Retry only when the input,
+implementation, environment, or failure hypothesis changes. A validation
+concern is permitted only when repository evidence shows that the criterion is
+ambiguous, stale, implementation-prescriptive, unrunnable, disproportionate, or
+incompatible with the stated outcome and further implementation retries would
+not resolve that mismatch. Never weaken or replace a gate silently.
 
-## Status ownership
+## Dependencies and scheduling
 
-- `plan-phase`: `pending → in-progress`; `blocked → in-progress` only after
-  verifying resolution and removing `Blocked on:`.
-- `plan-reflect`: `in-progress → complete|blocked` and all `Remaining:` or
-  `Blocked on:` edits.
-- Indexes never mirror status.
+`## Dependencies` is the execution graph. A phase is ready when every declared
+phase dependency is `complete` and every sibling dependency's linked phases are
+`complete`. `none` creates no dependency. Index order breaks ties among ready
+phases; a blocked earlier phase does not prevent an independent later phase from
+running.
 
-`plan-reflect` may revise affected later phase files. It may insert a
-prerequisite by renumbering only pending phases, updating filenames, headings,
-links, and dependencies together. Never renumber a started phase. Parent
-dependency edits must update the entry and Mermaid graph together.
-If a prerequisite must precede a started phase, block it and require follow-up
-work rather than rewriting history.
+A `sibling <slug>` dependency is valid only in a multi-plan child whose parent
+entry declares that slug. Every parent dependency must appear in at least one
+relevant child phase. Slugs must be unique and graphs acyclic.
 
-## Structural validation
+Parallel execution is allowed only for phases or children with disjoint affected
+areas, compatible interfaces, and no shared mutable validation, migration,
+deployment, or generated state. One worker exclusively owns each delegated
+phase file. The primary agent owns scheduling, shared integration, and final
+validation.
 
-Before execution or reflection, verify the applicable schema, link integrity,
-numbering, legal statuses, and dependency consistency. Stop and name malformed
-artifacts; do not guess or silently repair them.
+## Status and revision ownership
 
-## Validation failures
+- `plan-phase` owns phase transitions, `Remaining:`, `Blocked on:`, and execution
+  history.
+- `plan-reflect` never changes earned status or execution history. It records
+  post-phase forward-looking notes in the pending phase or sibling that will
+  consume them and may revise affected pending plan content. Use the executed
+  phase only when no clear future destination exists.
+- `plan-auto` and `plan-auto-multi` coordinate execution but do not maintain a
+  competing status summary.
+- Indexes never mirror live status.
 
-A failed gate starts triage, not an open-ended retry loop. Classify it as an
-implementation defect, a tool or environment problem, or a validation concern.
-An evidence check is not a remediation target unless it reveals a material
-defect or changes confidence in the goal. A retry is justified only when the
-input, implementation, environment, or failure hypothesis changes; never repeat
-an unchanged failing command or approach. Pursue distinct grounded alternatives
-when new evidence supports them. If two materially distinct approaches produce
-the same material failure, or the criterion is ambiguous, stale,
-implementation-prescriptive, unrunnable, or disproportionate to the phase
-outcome, stop remediation and surface a validation concern.
+Only pending phases may be renumbered. Update filenames, headings, links, and
+dependencies together. Never renumber a started phase. Parent dependency edits
+must update entries, the Mermaid graph, and affected child phases together. Every
+plan revision receives an index revision-history entry.
 
-A validation concern is a permitted blocker when repository evidence supports
-it and the phase cannot be completed without weakening, redefining, or
-otherwise deciding a material criterion. Record it under `Blocked on:` with the
-criterion, expected and actual results, evidence, approaches tried, the
-specific human help requested and resume action. Do not silently weaken a gate,
-replace it with an easier check, or mark the phase complete to avoid a material
-concern.
+## Structural validation and repair
+
+Before creation completes, execution starts, or reflection begins, verify the
+contract version, applicable schema, link integrity, numbering, legal statuses,
+unique slugs, coordination fields, and dependency consistency.
+
+Repair a defect automatically only when there is exactly one mechanical
+interpretation and the repair cannot change scope, execution order, acceptance,
+or earned status. Record and report the repair. Stop and request direction for
+ambiguous, semantic, or destructive repairs. A temporary multi-plan tree may be
+completed and validated before publication; never treat a partial final tree as
+valid.
 
 ## Autonomous execution
 
-When the user requests execution and reflection together, or invokes
-`plan-auto`, loop:
-
-1. `plan-phase` implements until the objective is achieved and no safe,
-   in-scope material work remains or a concrete permitted blocker prevents
-   progress. It gathers proportionate evidence rather than pursuing every
-   possible check.
-2. `plan-reflect` independently assesses the goal, deliverables, and
-   proportionate evidence, then records the earned status.
-3. `complete` finishes. A valid `blocked` result stops. `in-progress` returns
-   immediately to `plan-phase` for remediation.
-
-Continue while safe, evidence-based in-scope material work remains. Do not retry
-an unchanged failure or present `Remaining:` for a non-material evidence gap.
-Failed validation on its own is not a blocker; a material defect, unresolved
-acceptance condition, or validated criterion mismatch is. A standalone
-reflection request assesses the goal and evidence; it does not authorize
+`plan-auto` reads a cross-phase coordination digest, then executes ready phases
+until every phase is complete or no ready phase can progress. `plan-phase`
+performs implementation, validation, terminal status, and history in one pass.
+After a terminal phase result, `plan-reflect` reads the execution record without
+rerunning verification and records only learnings that improve pending phases or
+sibling plans. An unexpected interruption may leave `in-progress` with exact
+`Remaining:` work; resume it without repeating completed inspection or
 implementation.
+
+`plan-auto-multi` schedules ready child plans from the parent dependency graph
+and runs `plan-auto` for each. A blocked branch does not stop independent ready
+branches. Both orchestrators may use bounded parallel agents only under the
+isolation rules above.
+
+Use available approval and escalation mechanisms before recording an approval-
+dependent blocker. Continue while safe, evidence-based, in-scope work remains.
+Do not repeat an unchanged failure or create work for a non-material evidence
+gap. Reflection is a lightweight learning step, not a second verification pass.

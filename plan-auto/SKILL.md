@@ -1,38 +1,42 @@
 ---
 name: plan-auto
-description: Autonomously execute and reflect every remaining phase of one directory-backed plan until complete or concretely blocked.
+description: Autonomously execute every remaining ready phase of one directory-backed plan until complete or no further in-scope progress is possible. Use when the user asks to run or finish an existing saved plan; do not use on a multi-plan parent.
 ---
 
 # Plan Auto
 
 Read `../plan-shared/PLAN-CONTRACT.md` first and follow it.
 
-Resolve one executable plan and validate its structure. Read ordered links and
-status lines; load a full phase only when executing it. Do not chain sibling
-plans or execute a multi-plan parent.
+Resolve one executable plan and validate its structure. Read the index plus the
+objective, dependencies, coordination boundaries, durable notes, and status of every
+non-complete phase before editing. This cross-phase digest prevents local choices
+from conflicting with later interfaces. Load full phase detail only when a
+phase becomes ready.
 
-For each first non-complete phase in order:
+Execute the dependency graph, using index order only as a stable tiebreaker. Run
+full `plan-phase` behavior for each ready phase. `plan-phase` owns terminal
+status and evidence history. After each terminal phase result, run full
+`plan-reflect` behavior to capture only learnings that improve upcoming phases
+or sibling plans. Reflection does not reverify the phase or change its status.
 
-1. Run full `plan-phase` behavior.
-2. Run full `plan-reflect` behavior.
-3. If reflection records `Remaining:`, repeat both on the same phase while
-   material implementation or outcome-changing evidence work remains. Do not
-   repeat an unchanged failing validation path or reopen a phase for a
-   non-material evidence gap.
-4. Advance only after `complete`. Stop for a valid `blocked` result, including
-   a surfaced validation concern, or an approval-dependent action.
+When several ready phases have disjoint affected areas and no shared mutable
+validation state, delegate them to bounded parallel agents if orchestration is
+available. Give one agent exclusive ownership of each phase file and its scoped
+implementation. Keep integration, shared-file decisions, and final repository
+validation with the primary agent. Otherwise execute sequentially. Continue
+locally if delegation is unavailable. During parallel work, delegated reflection
+may update only its owned phase notes; the primary agent serially applies any
+reported cross-phase learning after workers return.
 
-Diagnose material failures and try sound alternatives when new evidence supports
-them. Once the objective is achieved with proportionate evidence, do not pursue
-additional checks solely because they were listed in the plan. Once a validation
-concern is established, preserve the evidence and surface the decision needed
-instead of re-entering the same remediation loop. Keep the repository working
-between phases. Refresh the index after reflection because pending phases may
-have changed.
+After each result, refresh phase statuses and coordination notes. Resume an
+`in-progress` phase before starting new work when its dependencies remain
+satisfied. Continue independent ready phases when another phase is blocked; stop
+only when every phase is complete or no ready phase can progress.
 
-Report phases completed, outcome evidence, material gaps, any valid blocker,
-aggregate changes, reflection revisions, and the next action. For a blocked
-phase, make the human handoff actionable by naming the smallest help requested,
-why it unblocks the phase, and the exact resume action. Include a recommendation
-and alternatives for decisions or approvals. Add no status sidecar or run log;
-phase files are authoritative.
+Use available approval or escalation mechanisms before treating an
+approval-dependent action as blocked. Diagnose failures and try grounded
+alternatives when new evidence supports them. Never repeat an unchanged command
+or hypothesis. Preserve a working repository at phase boundaries.
+
+Report completed and incomplete phases, aggregate changes, observed validation,
+durable plan revisions, blockers, and the exact next action.
