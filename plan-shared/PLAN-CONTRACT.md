@@ -65,8 +65,8 @@ optional `## Open Questions` may follow.
 - [Phase <N> | sibling <slug> | none]
 
 ## Validation
-- [Required] [Falsifiable completion check]
-- [Supplemental] [Optional confidence-building check]
+- [Gate] [Material acceptance check]
+- [Evidence] [Optional confidence-building check]
 
 ## Notes
 - [Optional execution context]
@@ -84,10 +84,14 @@ status when needed:
 
 ```md
 - Blocked on:
-  - [Decision or external prerequisite]
+  - Blocker: [specific condition]
+  - Human help requested: [smallest action the human can take]
+  - Why this unblocks: [dependency or uncertainty it resolves]
+  - Resume with: [exact next agent action after help arrives]
 ```
 
-A complete phase carries neither note.
+A complete phase carries neither `Remaining:` nor `Blocked on:` note. It may
+retain a concise `## Notes` entry describing a non-material verification gap.
 
 For a validation concern, make the blocker actionable:
 
@@ -98,18 +102,44 @@ For a validation concern, make the blocker actionable:
   - Actual: [observed result]
   - Evidence: [repository or environment evidence]
   - Approaches tried: [distinct grounded approaches]
-  - Decision needed: [clarification, approval, or criterion revision]
+  - Human help requested: [clarification, approval, or criterion revision]
+  - Why this unblocks: [decision or uncertainty it resolves]
+  - Resume with: [exact next agent action after help arrives]
 ```
+
+Every blocked phase must make the human handoff actionable. Ask for the
+smallest useful action, such as a decision, file or input, access, approval, or
+external change. Explain why that action unblocks the phase and what the agent
+will do next. When the blocker presents a choice, include a recommended default
+and the viable alternatives or tradeoffs. Do not end with a cryptic blocker or
+a generic request to "advise". If no human action can clear the blocker, state
+the external change required and the condition for resuming.
 
 Validation entries should identify a command or observable result and its
 expected outcome. They must test the phase outcome, not prescribe an
-implementation unless that implementation is itself a requirement. Keep the
-required set minimal and avoid duplicate checks. Entries may be labeled
-`[Required]` or `[Supplemental]`; unlabeled entries in existing plans are
-treated as required for compatibility. Required entries gate completion.
-Supplemental entries must still be run when practical and reported, but their
-failure does not by itself prevent completion unless it reveals a defect or
-contradicts a deliverable.
+implementation unless that implementation is itself a requirement. Use the
+fewest checks that would change the decision to accept the phase. A `[Gate]`
+must protect a material correctness, safety, compatibility, data-integrity, or
+explicit user-acceptance condition. An `[Evidence]` check increases confidence
+but does not create work or block completion by itself. A gate may be satisfied
+by equivalent evidence; the named command is not the goal.
+
+Entries may use the legacy labels `[Required]` and `[Supplemental]`. Treat
+`[Required]` as `[Gate]` and `[Supplemental]` as `[Evidence]`. For unlabeled
+legacy entries, use judgment: promote an entry to a gate only when it is
+material and decision-changing; otherwise treat it as evidence. Never invent a
+hard gate merely because a check appears in the file. Record non-material
+verification gaps under `## Notes` without adding `Remaining:` or `Blocked on:`.
+
+Completion is outcome-first: the objective and deliverables must be achieved,
+material acceptance conditions must have proportionate evidence, and no
+material defect or constraint violation may remain. A check is evidence for
+that decision, not a competing objective.
+
+Report evidence with a calibrated status such as `observed`, `inferred`, `not
+run`, or `uncertain`. Reserve `pass` for an observed result that matches the
+expected outcome. Do not turn an unavailable command into a claim that the
+underlying behavior is correct.
 
 ## Dependencies
 
@@ -141,37 +171,42 @@ artifacts; do not guess or silently repair them.
 
 ## Validation failures
 
-A failed validation starts triage, not an open-ended retry loop. Classify the
-failure as an implementation defect, a tool or environment problem, or a
-validation concern. A retry is justified only when the input, implementation,
-environment, or failure hypothesis changes; never repeat an unchanged failing
-command or approach. Pursue distinct grounded alternatives when new evidence
-supports them. If two materially distinct approaches produce the same failure,
-or the criterion is ambiguous, stale, implementation-prescriptive,
-unrunnable, or disproportionate to the phase outcome, stop remediation and
-surface a validation concern.
+A failed gate starts triage, not an open-ended retry loop. Classify it as an
+implementation defect, a tool or environment problem, or a validation concern.
+An evidence check is not a remediation target unless it reveals a material
+defect or changes confidence in the goal. A retry is justified only when the
+input, implementation, environment, or failure hypothesis changes; never repeat
+an unchanged failing command or approach. Pursue distinct grounded alternatives
+when new evidence supports them. If two materially distinct approaches produce
+the same material failure, or the criterion is ambiguous, stale,
+implementation-prescriptive, unrunnable, or disproportionate to the phase
+outcome, stop remediation and surface a validation concern.
 
 A validation concern is a permitted blocker when repository evidence supports
 it and the phase cannot be completed without weakening, redefining, or
-otherwise deciding the criterion. Record it under `Blocked on:` with the
-criterion, expected and actual results, evidence, approaches tried, and the
-specific decision or clarification needed. Do not silently weaken a required
-criterion, replace it with an easier check, or mark the phase complete to avoid
-the concern.
+otherwise deciding a material criterion. Record it under `Blocked on:` with the
+criterion, expected and actual results, evidence, approaches tried, the
+specific human help requested and resume action. Do not silently weaken a gate,
+replace it with an easier check, or mark the phase complete to avoid a material
+concern.
 
 ## Autonomous execution
 
 When the user requests execution and reflection together, or invokes
 `plan-auto`, loop:
 
-1. `plan-phase` implements and validates until no safe in-scope work remains or
-   a concrete permitted blocker prevents progress.
-2. `plan-reflect` independently verifies and records the earned status.
+1. `plan-phase` implements until the objective is achieved and no safe,
+   in-scope material work remains or a concrete permitted blocker prevents
+   progress. It gathers proportionate evidence rather than pursuing every
+   possible check.
+2. `plan-reflect` independently assesses the goal, deliverables, and
+   proportionate evidence, then records the earned status.
 3. `complete` finishes. A valid `blocked` result stops. `in-progress` returns
    immediately to `plan-phase` for remediation.
 
-Continue while safe, evidence-based in-scope work remains. Do not retry an
-unchanged failure or present `Remaining:` as a handoff when a valid validation
-concern has been established. Failed validation on its own is not a blocker;
-validated criterion ambiguity or mismatch is. A standalone reflection request
-verifies only and does not authorize implementation.
+Continue while safe, evidence-based in-scope material work remains. Do not retry
+an unchanged failure or present `Remaining:` for a non-material evidence gap.
+Failed validation on its own is not a blocker; a material defect, unresolved
+acceptance condition, or validated criterion mismatch is. A standalone
+reflection request assesses the goal and evidence; it does not authorize
+implementation.

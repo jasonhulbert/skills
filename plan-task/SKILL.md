@@ -18,9 +18,18 @@ Inspect the relevant code and callers, make the smallest complete change, and
 follow existing patterns. Add behavior-focused tests when behavior changes.
 Avoid unrelated cleanup.
 
-Run the agreed validation and appropriate project checks. An unrun check is not
-a pass. If the task expands beyond this skill's boundary, stop and recommend
-`plan-create` rather than leaving a misleading partial implementation.
+Run the smallest set of checks that can change acceptance of the outcome. Use
+equivalent evidence when it establishes the same result. Treat additional
+checks as confidence-building rather than new work; report checks that were not
+run and any material residual uncertainty without claiming they passed. If a
+material acceptance condition lacks proportionate evidence, state the gap and
+recommend `plan-create` or user input rather than looping. If the task expands
+beyond this skill's boundary, stop and recommend `plan-create` rather than
+leaving a misleading partial implementation.
+
+Use calibrated evidence terms such as `observed`, `inferred`, `not run`, or
+`uncertain`; reserve `pass` for an observed result that matches the expected
+outcome.
 
 Report changed files, actual validation results, relied-on assumptions, and any
 work explicitly deferred.

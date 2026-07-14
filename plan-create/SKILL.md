@@ -11,19 +11,30 @@ Inspect the request, repository, tests, integration points, and local
 constraints. Resolve only ambiguity that changes scope, sequencing, risk, or
 acceptance; otherwise state reasonable assumptions.
 
-Design executable phases with an objective, checkable deliverables,
-dependencies, and minimal falsifiable validation. Validation should measure the
-outcome rather than prescribe the implementation. Label completion gates
-`[Required]` and confidence-building checks `[Supplemental]`; keep the
-required set small, non-duplicative, and grounded in commands or observable
-results with explicit expected outcomes.
+Design executable phases around the objective and deliverables, with minimal
+goal-relevant validation. Validation should measure the outcome rather than
+prescribe the implementation. Label material acceptance conditions `[Gate]` and
+optional confidence-building checks `[Evidence]`. Use the fewest gates that
+would change the decision to accept the phase; do not turn conventional lint,
+typecheck, test, or documentation checks into gates unless they protect a
+material requirement.
+
+Make each gate realistic and attainable in the stated environment. Include its
+expected observable result and prerequisite, or identify an equivalent local
+check. Do not specify a check the agent cannot reasonably run and then treat
+that check as the plan's objective.
 
 Challenge validation before writing it. Flag criteria that are ambiguous,
 stale, environment-dependent without a known prerequisite, implementation-
 prescriptive, broader than the phase objective, or disproportionate to the
 requested outcome. Resolve concerns only when repository evidence settles them;
 otherwise record them as open questions and report them. Do not hide them in an
-unbounded validation list.
+unbounded validation list or let them expand the required gate set.
+
+Make consequential open questions actionable: state the human decision or input
+needed, why it affects the plan, the recommended default, and the alternatives
+if a choice exists. Avoid vague questions that leave the human to infer how to
+unblock the work.
 
 Keep shared context in the index and phase-specific detail in its phase file.
 
