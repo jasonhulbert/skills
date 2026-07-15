@@ -1,42 +1,67 @@
-# Plan Directory Contract
+# Plan Delivery Contract
 
-Contract version: `plan-directory/v2`.
+Contract version: `plan-directory/v3`.
 
-This contract defines shared artifacts and execution invariants for the
-`plan-*` suite. It wins over individual plan-skill instructions, while system,
-developer, and user instructions retain their normal higher priority.
+This contract defines durable operational memory for `plan-create` and
+`plan-run`. Plans exist to align direction, coordinate work, resume execution,
+and expose decisions and risk. They are not exhaustive verification ledgers.
+
+A plan covers the smallest end-to-end increment that a target user or operator
+can run, observe, and learn from. An MVP, v1, complete product, or production
+release is not one increment merely because it has a single label. Defer later
+capabilities and lifecycle stages when implementing the current slice will
+change their design.
+
+## Core semantics
+
+Delivery and confidence are independent.
+
+- Delivery answers whether planned software work remains: `pending`, `working`,
+  `done`, or `blocked`.
+- Confidence reports current evidence: `unassessed`, `verified`, `partial`,
+  `failed`, `unavailable`, or `deferred`.
+
+Confidence never controls dependency readiness. A work item may be `done` with
+less than verified confidence. `Done` means its deliverables exist, its intended
+outcome is usable, and no known defect prevents that intended use. It does not
+claim exhaustive correctness.
+
+Only an explicitly approved `[Hold]`, a concrete defect with no safe path,
+required user or external action, or a direction-changing decision may block
+delivery. Missing evidence, unavailable environments, credentials, harness
+failures, skipped checks, and uncertainty are not blockers by themselves.
 
 ## Layout and publication
 
-A standalone plan lives at `<root>/<YYYY-MM-DD>-<slug>/` with `index.md` and
-`phase-<NN>-<slug>.md` files. Use an existing workspace `plans/` root when the
-user does not specify one. Never overwrite an existing plan; choose a `-2`,
-`-3`, or later suffix before writing.
+A single plan lives at `<root>/<YYYY-MM-DD>-<slug>/` with `index.md` and
+contiguous `work-<NN>-<slug>.md` files. Use an existing workspace `plans/` root
+unless the user selects another location. Never overwrite an existing plan;
+choose a numeric suffix.
 
-A multi-plan parent contains `index.md` and topologically ordered child
-directories named `plan-<NN>-<slug>/`. Each child is an ordinary plan. Its unique
-bare slug is its dependency identifier. A multi-plan parent is executable only
-through `plan-auto-multi`, never as a single child plan.
+A multi-workstream plan uses the same parent index plus topologically ordered
+`workstream-<NN>-<slug>/` child plans. Each child is an ordinary plan. Build the
+complete tree in a hidden temporary sibling on the same filesystem, validate
+it, then atomically rename it to the unused final path. Never publish a partial
+multi-workstream plan.
 
-Build a multi-plan tree in a hidden temporary sibling directory on the same
-filesystem as its final destination. Create the parent and every child there,
-validate the complete tree, then atomically rename it to the unused final path.
-Never publish a parent with missing children. If interrupted before publication,
-leave the final path absent and report the temporary path and resume action.
-
-Execution skills accept a plan directory, its index, or a phase file.
+`plan-run` accepts a plan directory, index, workstream directory, or work file
+and auto-detects its shape.
 
 ## Plan index
 
 ```md
 # [Name]
 
-- Contract: plan-directory/v2
+- Contract: plan-directory/v3
 - Created: [ISO-8601 timestamp]
-- Repository baseline: [commit and dirty summary | unavailable]
+- Repository baseline: [commit and relevant dirty state | unavailable]
 
-## Goal
-- [Outcome]
+## Increment
+- Outcome: [next integrated, usable result]
+- Useful when: [observable user or operator value]
+
+## Non-goals
+- [Deferred direction or explicit exclusion]
 
 ## Constraints
 - [Constraint]
@@ -44,206 +69,160 @@ Execution skills accept a plan directory, its index, or a phase file.
 ## Assumptions
 - [Relied-on assumption]
 
-## Phases
-1. [Phase 1: Name](phase-01-name.md)
+## Approved Holds
+- None.
 
-## Open Questions
-- [Optional cross-phase question]
+## Confidence Strategy
+- [Risk or behavior worth observing; no exhaustive command list]
 
-## Revision History
+## Work
+1. [Work 1: Name](work-01-name.md)
+
+## Decisions and Changes
 - None yet.
 ```
 
-Phase links define stable display order and selection priority, not implicit
-execution dependencies. Links must be contiguous, unique, and resolve exactly.
-Every phase file is linked exactly once. Indexes never contain live status.
-
-Append a revision-history entry when assumptions, questions, phase order,
-dependencies, coordination boundaries, or acceptance criteria change. Record the
-timestamp, changed plan content, repository evidence, and reason. Do not record
-ordinary code changes here.
-
-## Multi-plan index
-
-A parent index contains the same contract, creation, baseline, goal,
-constraints, assumptions, open-question, and revision-history metadata plus
-`## Overview`, `## Plan Dependency Graph`, and `## Plans`. Each plan entry links
-its child directory and records exclusive scope, affected areas, interfaces,
-goal, constraints, and `Depends on:` using unique bare slugs. An edge `a --> b`
-means `b` depends on `a`. Entries, the Mermaid graph, and child phase-level
-sibling dependencies must agree. The parent contains no live child status.
-
-## Phase file
+For each approved hold, replace `None` with:
 
 ```md
-# Phase <N>: [Name]
+- [Hold] [Condition] — Prevents: [unacceptable outcome]; clear when: [minimum
+  evidence or decision]; owner: [user, agent, or external party].
+```
 
-- Status: pending
-- Objective: [Outcome]
+Planned holds require explicit user agreement. Confidence targets never imply a
+hold.
+
+For a multi-workstream parent, replace `## Work` with `## Workstreams`. Each
+entry links its child directory and states its outcome, affected areas,
+interfaces, and bare-slug dependencies. Include a `## Dependency Graph` Mermaid
+diagram. Entries, graph edges, and child dependencies must agree. An edge
+`a --> b` means `b` depends on `a`.
+
+Index order is display order and a scheduling tiebreaker. Dependencies define
+readiness. Links must be contiguous, unique, and resolve exactly.
+
+## Work item
+
+```md
+# Work <N>: [Name]
+
+- Delivery: pending
+- Confidence: unassessed
+- Outcome: [coherent result]
 
 ## Deliverables
-- [Checkable artifact]
+- [Checkable software or artifact]
 
 ## Dependencies
-- [Phase <N> | sibling <slug> | none]
+- [Work <N> | workstream <slug> | none]
 
 ## Coordination
 - Affected areas: [files, modules, services, or none]
-- Interfaces and invariants: [contracts later work must preserve or none]
+- Interfaces and invariants: [contracts to preserve or none]
 
-## Validation
-- [Gate] [Command or observable result] — Expected: [result]
-- [Evidence] [Optional confidence-building check] — Expected: [result]
+## Holds
+- None additional.
+
+## Confidence Targets
+- [Risk or behavior] — Desired observation: [proportionate evidence]
 
 ## Notes
-- [Only durable context useful to later phases or sibling plans]
+- [Only durable context useful to this or later work]
 
-## Execution History
+## Outcome Record
 - None yet.
 ```
 
-The heading and zero-padded filename number must agree. Each phase has exactly
-one status: `pending`, `in-progress`, `complete`, or `blocked`. Only `complete`
-is done. A nonterminal phase carries one resumability note directly below its
-status when needed:
+The heading and zero-padded filename number must agree. Every work file is
+linked once. Delivery and confidence must each use exactly one legal value.
+
+When delivery is `blocked`, insert this section before `## Outcome Record`:
 
 ```md
-- Remaining:
-  - [Safe unfinished work or validation]
+## Blocked On
+- Classification: [approved hold | product defect | user action | external state | direction decision]
+- Product impact: [why work cannot safely continue]
+- Recommendation: [preferred clearing action]
+- Alternatives: [viable alternatives or none]
+- Owner: [user, agent, or external party]
+- Clear when: [observable continuation condition]
 ```
+
+Remove the section when the condition clears; preserve its resolution in the
+next outcome record. Never use `Blocked On` for a confidence gap alone.
+
+Work is ready when every declared work dependency is `done` and every declared
+workstream dependency's linked work is `done`. Confidence state has no effect on
+readiness. Resume `working` work before starting new ready work when practical.
+Continue independent work when another item is blocked.
+
+## Outcome records
+
+Replace `None yet` with one concise entry per execution session:
 
 ```md
-- Blocked on:
-  - Blocker: [specific condition]
-  - Human help requested: [smallest action the human can take]
-  - Why this unblocks: [dependency or uncertainty it resolves]
-  - Resume with: [exact next agent action after help arrives]
+### [ISO-8601 timestamp]
+- Delivered: [observable result or none]
+- Confidence:
+  - [Target] — [verified | partial | failed | unavailable | deferred] via [brief observation]
+- Known issues and follow-ups: [material item, owner, and recommendation | none]
+- Decisions and deviations: [direction or scope change and reason | none]
+- Resume: [next useful action | complete]
 ```
 
-A complete phase carries neither note. Every blocker must request the smallest
-useful human action, explain why it unblocks work, and give the exact resume
-action. Include a recommended default and viable alternatives for decisions. If
-no human action can clear it, state the external change and resume condition.
+Do not include command transcripts, repeated attempts, routine passing checks,
+or a chronological narration. Preserve raw logs in the normal test or build
+artifacts when they matter.
 
-For a validation concern, also record the criterion, expected and actual
-results, repository evidence, grounded approaches tried, and why the criterion
-requires human clarification or revision. Do not label a difficult defect a
-validation concern merely because multiple fixes failed.
+Set the work item's aggregate confidence to the most informative honest summary
+of its targets. Use `verified` only when all important targets have direct
+support. Use `partial` for mixed or incomplete support, `failed` for an observed
+behavior gap, `unavailable` when the environment prevents observation, and
+`deferred` when checking was intentionally postponed.
 
-## Execution history
+## Decisions, learning, and scope
 
-Replace `- None yet.` with append-only entries:
+Record only decisions and changes that alter direction, constraints, approved
+holds, work decomposition, dependencies, or meaningful risk. Include timestamp,
+decision, reason, and affected work. Update future work directly when execution
+invalidates it. There is no separate reflection log.
 
-```md
-### [ISO-8601 timestamp] — execution
-- Transition: [status sequence, such as pending -> in-progress -> complete]
-- Baseline: [commit and relevant dirty state | unavailable]
-- Changes: [files or artifacts changed | none]
-- Validation:
-  - [Gate or Evidence criterion] — [observed pass | observed fail | not run | uncertain] via [command or observation]
-- Equivalent evidence: [original gate, same failure mode observed, and rationale | none]
-- Deviations: [plan deviation and reason | none]
-```
+Affected areas and workstream scopes guide coordination. They are not ownership
+fences. A small cross-boundary fix is allowed when it is the shortest safe path
+to the increment; record the deviation. Replan or ask the user when the change
+expands the product outcome, violates a constraint, accepts meaningful product
+risk, or materially changes the workstream graph.
 
-History is append-only. Correct an inaccurate prior entry with a new execution
-entry; do not rewrite it. `## Notes` is forward-looking context, not an
-execution log.
+During parallel execution, one worker exclusively owns each delegated work file
+and mutable implementation area. Shared integration, generated state,
+deployments, migrations, and external effects require explicit coordination.
 
-## Validation integrity
+## Confidence triage
 
-Validation must test the phase outcome rather than prescribe an implementation
-unless that implementation is itself required. Use the fewest checks that would
-change acceptance. A `[Gate]` protects a material correctness, safety,
-compatibility, data-integrity, or explicit acceptance condition. `[Evidence]`
-increases confidence but does not create work or block completion by itself.
+Choose checks after implementation based on the confidence targets and actual
+risks. Exact planned commands are evidence, not completion requirements.
 
-Every gate must have a gate-by-gate result in execution history. A named command
-is evidence rather than the objective, but alternative evidence satisfies it
-only when it directly observes the same material behavior or failure mode. State
-the equivalence rationale. Inference alone cannot satisfy a runnable executable-
-behavior gate. If neither the named check nor direct equivalent evidence is
-available, the phase retains a material evidence gap.
+Do not create separate work whose primary purpose is to verify earlier work or
+clear confidence targets. Gather confidence alongside the outcome it informs.
+Testing infrastructure is delivery work only when it is an agreed reusable
+capability, not when it exists solely to force a confidence state.
 
-Legacy `[Required]` and `[Supplemental]` labels mean `[Gate]` and `[Evidence]`.
-For unlabeled legacy entries, promote only material decision-changing checks.
-Never invent a gate merely because a command appears in the file.
+Classify a failed or unavailable check as a product defect, harness defect,
+environment limitation, or inconclusive evidence. Fix product defects that
+prevent intended use. For a non-hold verification problem, make at most one
+small remediation attempt based on a changed hypothesis when worthwhile, then
+record the gap and continue. Never add product behavior solely to make a check
+observable or repeat an unchanged attempt.
 
-Report evidence as `observed pass`, `observed fail`, `not run`, or `uncertain`.
-Do not claim a check passed when it was skipped or inferred.
-
-A failed gate starts triage. Classify it as an implementation defect, tool or
-environment problem, or validation concern. Retry only when the input,
-implementation, environment, or failure hypothesis changes. A validation
-concern is permitted only when repository evidence shows that the criterion is
-ambiguous, stale, implementation-prescriptive, unrunnable, disproportionate, or
-incompatible with the stated outcome and further implementation retries would
-not resolve that mismatch. Never weaken or replace a gate silently.
-
-## Dependencies and scheduling
-
-`## Dependencies` is the execution graph. A phase is ready when every declared
-phase dependency is `complete` and every sibling dependency's linked phases are
-`complete`. `none` creates no dependency. Index order breaks ties among ready
-phases; a blocked earlier phase does not prevent an independent later phase from
-running.
-
-A `sibling <slug>` dependency is valid only in a multi-plan child whose parent
-entry declares that slug. Every parent dependency must appear in at least one
-relevant child phase. Slugs must be unique and graphs acyclic.
-
-Parallel execution is allowed only for phases or children with disjoint affected
-areas, compatible interfaces, and no shared mutable validation, migration,
-deployment, or generated state. One worker exclusively owns each delegated
-phase file. The primary agent owns scheduling, shared integration, and final
-validation.
-
-## Status and revision ownership
-
-- `plan-phase` owns phase transitions, `Remaining:`, `Blocked on:`, and execution
-  history.
-- `plan-reflect` never changes earned status or execution history. It records
-  post-phase forward-looking notes in the pending phase or sibling that will
-  consume them and may revise affected pending plan content. Use the executed
-  phase only when no clear future destination exists.
-- `plan-auto` and `plan-auto-multi` coordinate execution but do not maintain a
-  competing status summary.
-- Indexes never mirror live status.
-
-Only pending phases may be renumbered. Update filenames, headings, links, and
-dependencies together. Never renumber a started phase. Parent dependency edits
-must update entries, the Mermaid graph, and affected child phases together. Every
-plan revision receives an index revision-history entry.
+When human attention is required, report the classification, product impact,
+recommended action, alternatives, owner, and exact continuation condition.
 
 ## Structural validation and repair
 
-Before creation completes, execution starts, or reflection begins, verify the
-contract version, applicable schema, link integrity, numbering, legal statuses,
-unique slugs, coordination fields, and dependency consistency.
+Before creation completes or execution starts, verify the contract version,
+layout, links, numbering, legal states, dependency consistency, unique
+workstream slugs, and approved-hold format.
 
-Repair a defect automatically only when there is exactly one mechanical
-interpretation and the repair cannot change scope, execution order, acceptance,
-or earned status. Record and report the repair. Stop and request direction for
-ambiguous, semantic, or destructive repairs. A temporary multi-plan tree may be
-completed and validated before publication; never treat a partial final tree as
-valid.
-
-## Autonomous execution
-
-`plan-auto` reads a cross-phase coordination digest, then executes ready phases
-until every phase is complete or no ready phase can progress. `plan-phase`
-performs implementation, validation, terminal status, and history in one pass.
-After a terminal phase result, `plan-reflect` reads the execution record without
-rerunning verification and records only learnings that improve pending phases or
-sibling plans. An unexpected interruption may leave `in-progress` with exact
-`Remaining:` work; resume it without repeating completed inspection or
-implementation.
-
-`plan-auto-multi` schedules ready child plans from the parent dependency graph
-and runs `plan-auto` for each. A blocked branch does not stop independent ready
-branches. Both orchestrators may use bounded parallel agents only under the
-isolation rules above.
-
-Use available approval and escalation mechanisms before recording an approval-
-dependent blocker. Continue while safe, evidence-based, in-scope work remains.
-Do not repeat an unchanged failure or create work for a non-material evidence
-gap. Reflection is a lightweight learning step, not a second verification pass.
+Repair only defects with one mechanical interpretation that cannot change
+direction, dependencies, holds, or earned delivery state. Record the repair in
+`Decisions and Changes`. Ask before semantic, ambiguous, or destructive repair.

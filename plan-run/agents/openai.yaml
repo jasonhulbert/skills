@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Run"
+  short_description: "Execute a saved delivery-first plan"
+  default_prompt: "Use $plan-run to execute this saved plan and keep delivery moving."

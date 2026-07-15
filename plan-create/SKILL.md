@@ -1,66 +1,72 @@
 ---
 name: plan-create
-description: Resolve critical ambiguity, then create a durable directory-backed phased implementation plan without implementing it. Use only when the user explicitly asks to create, save, or persist an auditable plan; use plan-create-multi when they explicitly request a multi-workstream plan.
+description: Align on and save a delivery-first rolling plan for the next usable software increment without implementing it. Use when the user explicitly asks to create, save, or persist a plan, including work that may need multiple coordinated workstreams.
 ---
 
 # Plan Create
 
-Read `../plan-shared/PLAN-CONTRACT.md` first and follow it. Do not implement.
+Read `../plan-shared/PLAN-CONTRACT.md` completely and follow it. Do not
+implement the software.
 
-## Critical alignment
+## Align before writing
 
-For a direct plan request, inspect the request, repository, tests, integration
-points, and local constraints before writing plan files. Build a provisional
-brief covering the outcome, scope and non-goals, material constraints,
-acceptance conditions, assumptions, and risks.
+Inspect the request, repository, tests, integration points, and local
+constraints. Build a provisional brief covering the next usable outcome,
+non-goals, constraints, assumptions, important risks, and what would make the
+increment useful.
 
-Resolve facts from available evidence. Identify only ambiguities that are costly
-to reverse, affect multiple downstream choices, create significant risk, or
-could invalidate the plan. Recommend and record a reasonable default for
-low-risk or reversible gaps.
+Resolve facts from evidence. Recommend defaults for reversible choices. Ask one
+primary question at a time only when user judgment would change direction,
+scope, risk acceptance, or the plan shape. State why the question matters, give
+a recommended answer, and explain the consequence of choosing differently.
+Do not create partial plan files while critical alignment is pending.
 
-When a critical ambiguity requires user judgment, pause before creating the plan
-directory and ask one primary question at a time. Briefly state why it matters,
-recommend an answer with reasoning, and explain the consequence of choosing
-differently. Order questions by dependency and impact. After several decisions,
-summarize what is settled and what remains uncertain.
+Propose a `[Hold]` only for a condition that would make continued execution
+unsafe, destructive, or strategically invalid. Explain the unacceptable
+outcome, clearing condition, and owner, and obtain explicit user agreement
+before recording a planned hold. Do not turn desired evidence or general
+caution into a hold.
 
-Continue to planning when the user confirms sufficient alignment, explicitly
-authorizes proceeding with stated assumptions, or the remaining uncertainty is
-low-risk, reversible, or better resolved during implementation. If inspection
-finds no critical ambiguity, proceed without asking a ceremonial question. Do
-not write a partial plan while alignment is pending.
+Proceed once the user confirms alignment, authorizes stated assumptions, or all
+remaining uncertainty is reversible or better resolved by implementation. If
+there is no critical ambiguity or proposed hold, proceed without ceremonial
+questions.
 
-For a `plan-create-multi` child brief, treat the parent-approved brief as the
-alignment decision. Use its supplied `output_dir`, global and child goals,
-constraints, bare-slug dependencies, and coordination boundaries exactly. If
-the brief contains a critical contradiction or omission, return the issue to the
-parent coordinator instead of interviewing the user or writing a partial child.
+## Plan the next increment
 
-Capture the repository baseline and dirty-worktree state required by the
-contract.
+Plan through the next integrated, usable increment. Keep later work as coarse
+direction or non-goals; do not detail an entire product lifecycle when current
+implementation will change later decisions.
 
-Design the fewest executable phases that preserve a working repository. Phase
-links define display order; `## Dependencies` defines execution order. Record
-affected areas and interfaces or invariants so an executor can understand
-cross-phase consequences without loading every phase in full.
+Define the increment as the smallest end-to-end slice that a target user or
+operator can run, observe, and learn from. Do not rename an entire MVP, v1, or
+production release as one increment. When the request spans several capability
+layers or lifecycle stages and the repository does not already support them,
+recommend a narrow first slice and obtain confirmation before writing. Defer
+authentication, billing, administration, distribution, and production readiness
+unless they are necessary to the immediate user scenario or already-established
+foundation.
 
-Use outcome-focused validation. Label material acceptance conditions `[Gate]`
-and optional confidence checks `[Evidence]`. Each gate must state its expected
-observable result and prerequisite. Use the fewest gates that would change the
-decision to accept the phase. Do not make routine lint, typecheck, test, or
-documentation commands gates unless they protect a material requirement.
+Use the fewest coherent work items that preserve a working repository. Create a
+multi-workstream plan only when distinct areas must advance independently to
+make the same near-term scenario usable. Do not use workstreams to preserve a
+full-product decomposition that should instead be deferred. Treat affected
+areas as coordination guidance, not hard ownership boundaries.
 
-Challenge each gate before writing it. Flag criteria that are ambiguous, stale,
-environment-dependent without a known prerequisite, implementation-prescriptive,
-broader than the objective, or disproportionate. Resolve concerns only when
-repository evidence settles them; otherwise record an actionable open question
-with the needed input, its effect, the recommended default, and alternatives.
+Define confidence targets as risks or behaviors worth observing. Do not
+precommit exhaustive checks or commands. Include an exact command only when an
+existing stable harness directly measures an important target. Confidence
+targets never become holds implicitly.
 
-Keep shared context in the index and phase-specific detail in phase files.
-Represent every parent dependency in at least one relevant child phase.
+Do not create a work item whose primary outcome is verification, gate clearing,
+release evidence, or confidence collection for earlier work. Gather confidence
+while delivering the relevant outcome. Plan test infrastructure or tooling as
+work only when it is itself an agreed reusable capability, not a way to force
+confidence to `verified`.
 
-Write the contract-defined directory, index, and ordered phase files. Re-read
-the complete artifact and fix structural, link, numbering, dependency, status,
-coordination, and validation defects before reporting the directory, phase
-outline, assumptions, and open questions.
+Write the contract-defined plan. For a multi-workstream plan, construct the
+entire tree in a hidden temporary sibling on the same filesystem, validate it,
+then atomically rename it to the unused final path. Re-read the artifact and fix
+structural, dependency, scope, hold, and link defects before reporting its
+location, increment, work outline, approved holds, assumptions, and deferred
+direction.

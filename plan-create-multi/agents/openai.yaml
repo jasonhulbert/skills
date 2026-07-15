@@ -1,4 +1,0 @@
-interface:
-  display_name: "Plan Create Multi"
-  short_description: "Create an auditable multi-workstream plan"
-  default_prompt: "Use $plan-create-multi to create a durable multi-plan breakdown for this project."
