@@ -1,4 +1,4 @@
 interface:
   display_name: "Plan Run"
-  short_description: "Execute a saved delivery-first plan"
-  default_prompt: "Use $plan-run to execute this saved plan and keep delivery moving."
+  short_description: "Execute a plan and maintain goal progress"
+  default_prompt: "Use $plan-run to execute this saved plan or roadmap and maintain durable goal progress."
