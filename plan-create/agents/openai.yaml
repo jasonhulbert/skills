@@ -1,4 +1,0 @@
-interface:
-  display_name: "Plan Create"
-  short_description: "Create a goal roadmap and execution plan"
-  default_prompt: "Use $plan-create to align on my complete goal and save the right-sized roadmap or execution plan."
