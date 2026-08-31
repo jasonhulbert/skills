@@ -21,7 +21,7 @@ Build the diagram from the supplied runtime instead of drawing arbitrary SVG sha
 - Render entities only through the predefined library. Every solid uses closed, viewer-facing top and side faces with consistent face shading.
 - Stack repeated blocks only on Z. All blocks in one stack share the same X/Y footprint.
 - Route every connector through 3D points where each segment changes exactly one axis. Do not use free-angle paths, curves, or screen-space routing.
-- Use the renderer's compact solid triangle markers for directed connectors. Keep marker size stable so selection emphasis never enlarges the arrowhead.
+- Use the renderer's compact solid triangle markers for directed connectors. Keep arrowheads, junction dots, and animated packets on the same relative scale so camera zoom and selection emphasis resize them together.
 - Treat the canvas as a world larger than the viewport. Preserve drag-to-pan, wheel/button zoom, and fit-to-content.
 - Preserve entity focus mode. Selecting an entity must emphasize that entity and its incident connectors while subduing unrelated graph content. Selection must not change geometry, camera state, connector semantics, or the active theme.
 - Render all entity codes, names, metadata, surface labels, and connector labels in the final annotation layer. No solid, route, or animated packet may be painted above visible annotation.
@@ -39,6 +39,6 @@ Build the diagram from the supplied runtime instead of drawing arbitrary SVG sha
 
 ## Output contract
 
-The completed artifact must be an HTML/JavaScript diagram that runs in a browser without a build step, Codex host dependency, Visualize dependency, or network dependency. Scene data must validate without errors. The artifact must retain the entity registry, connector registry, projection contract, camera controls, entity focus mode, three-theme toggle, top annotation layer, full-height viewport shell, and accessibility text from the starter.
+The completed artifact must be an HTML/JavaScript diagram that runs in a browser without a build step, host dependency, harness dependency, or network dependency. Scene data must validate without errors. The artifact must retain the entity registry, connector registry, projection contract, camera controls, entity focus mode, three-theme toggle, top annotation layer, full-height viewport shell, and accessibility text from the starter.
 
 Do not create a new renderer for each request. If the user's concept does not map cleanly to an existing type, compose existing types or ask whether the library itself should be extended. Add a new predefined type only when it represents a reusable spatial grammar across domains.

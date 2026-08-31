@@ -220,9 +220,9 @@ body {
 .bp-entity-annotation[data-bp-emphasis='selected'] .bp-entity-code,
 .bp-entity-annotation[data-bp-emphasis='selected'] .bp-entity-name,
 .bp-entity-annotation[data-bp-emphasis='selected'] .bp-entity-meta { fill: var(--bp-selection); }
-.bp-connector-group[data-bp-emphasis='related'] .bp-connector { stroke: var(--bp-selection); }
-.bp-connector-group[data-bp-emphasis='related'] .bp-junction,
-.bp-connector-group[data-bp-emphasis='related'] .bp-packet { fill: var(--bp-selection); }
+.bp-connector-group[data-bp-emphasis='related'] .bp-connector { stroke: var(--bp-selection); stroke-width: 2.4; }
+.bp-connector-group[data-bp-emphasis='related'] .bp-junction { fill: var(--bp-selection); r: 4.24px; }
+.bp-connector-group[data-bp-emphasis='related'] .bp-packet { fill: var(--bp-selection); r: 7.06px; }
 .bp-connector-label[data-bp-emphasis='related'] { fill: var(--bp-selection); }
 .iso-blueprint:not(.is-running) .bp-packet { display: none; }
 .bp-axis-line { stroke: var(--bp-muted); stroke-width: 1.2; vector-effect: non-scaling-stroke; }

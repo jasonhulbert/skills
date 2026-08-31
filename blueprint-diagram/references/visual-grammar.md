@@ -46,7 +46,7 @@ Do not add a surface merely to fill empty space. Use one only when its label hel
 
 Use one connector type consistently for one meaning within a diagram. Do not use line style as decoration.
 
-Directional markers are compact solid triangles. They retain one stable size and inherit the connector stroke color, including entity-focus emphasis. Do not replace them with open chevrons, large line arrows, or markers that grow when a relationship is focused.
+Directional markers are compact solid triangles. Their world-space dimensions scale with camera zoom just like junction dots and animated packets. They inherit the connector stroke color, and entity-focus emphasis applies the same relative size increase to all three marker types. Do not replace triangles with open chevrons or oversized line arrows.
 
 Every connector declares `from` and `to`. The first and last route points must touch those entity footprints. This keeps the visual route and the semantic relationship synchronized and improves the accessible description.
 

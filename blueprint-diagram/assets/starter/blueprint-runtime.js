@@ -551,7 +551,8 @@
   }
 
   function defsMarkup(namespace) {
-    return `<defs><pattern id="bp-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><rect width="7" height="7" fill="var(--bp-top)"></rect><line x1="0" y1="0" x2="0" y2="7" stroke="var(--bp-muted)" stroke-width="1"></line></pattern><marker id="${namespace}-arrow-end" markerWidth="4" markerHeight="4" refX="5.4" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 6 6"><path d="M 0.6 0.6 L 5.4 3 L 0.6 5.4 Z" fill="context-stroke"></path></marker><marker id="${namespace}-arrow-start" markerWidth="4" markerHeight="4" refX="5.4" refY="3" orient="auto-start-reverse" markerUnits="strokeWidth" viewBox="0 0 6 6"><path d="M 0.6 0.6 L 5.4 3 L 0.6 5.4 Z" fill="context-stroke"></path></marker></defs>`;
+    const arrow = (id, size, orient) => `<marker id="${namespace}-${id}" markerWidth="${size}" markerHeight="${size}" refX="5.4" refY="3" orient="${orient}" markerUnits="userSpaceOnUse" viewBox="0 0 6 6"><path d="M 0.6 0.6 L 5.4 3 L 0.6 5.4 Z" fill="context-stroke"></path></marker>`;
+    return `<defs><pattern id="bp-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><rect width="7" height="7" fill="var(--bp-top)"></rect><line x1="0" y1="0" x2="0" y2="7" stroke="var(--bp-muted)" stroke-width="1"></line></pattern>${arrow('arrow-end', 6.8, 'auto')}${arrow('arrow-start', 6.8, 'auto-start-reverse')}${arrow('arrow-end-focus', 9.6, 'auto')}${arrow('arrow-start-focus', 9.6, 'auto-start-reverse')}</defs>`;
   }
 
   function axisMarkup(bounds) {
@@ -618,6 +619,9 @@
         const isRelated = entityId !== null && [element.dataset.from, element.dataset.to].includes(entityId);
         if (isRelated) element.dataset.bpEmphasis = 'related';
         else delete element.dataset.bpEmphasis;
+        const connectorPath = element.querySelector?.('.bp-connector');
+        if (connectorPath?.hasAttribute('marker-start')) connectorPath.setAttribute('marker-start', `url(#${namespace}-arrow-start${isRelated ? '-focus' : ''})`);
+        if (connectorPath?.hasAttribute('marker-end')) connectorPath.setAttribute('marker-end', `url(#${namespace}-arrow-end${isRelated ? '-focus' : ''})`);
       });
       return true;
     }
