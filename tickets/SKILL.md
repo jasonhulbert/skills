@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 Turn a plan, spec, or the current context into tickets, favoring tracer-bullet vertical slices.
 
-Tracer-bullet vertical slices are ==thin, end-to-end increments of behavior through every relevant implementation layer== (such as the schema, API, UI and tests).
+Tracer-bullet vertical slices are thin, end-to-end increments of behavior through every relevant implementation layer.
 
 ## Process
 
