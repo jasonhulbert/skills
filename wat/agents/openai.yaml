@@ -1,0 +1,5 @@
+interface:
+  display_name: "Wat"
+  short_description: "The user will invoke this skill when they want an response, idea or subject clarified."
+policy:
+  allow_implicit_invocation: false

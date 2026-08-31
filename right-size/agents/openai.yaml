@@ -1,0 +1,5 @@
+interface:
+  display_name: "Right Size Work Item"
+  short_description: "Assess whether a task or work item is sufficiently defined and contextually bounded for one agent to execute and verify within a single conservative context window based on context fit rather than time or effort."
+policy:
+  allow_implicit_invocation: false

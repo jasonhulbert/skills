@@ -1,0 +1,5 @@
+interface:
+  display_name: "Tickets"
+  short_description: "Turn a plan, spec, or the current conversation into tickets, favoring tracer-bullet vertical slices."
+policy:
+  allow_implicit_invocation: false

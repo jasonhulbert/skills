@@ -1,0 +1,5 @@
+interface:
+  display_name: "STE"
+  short_description: "Use STE-inspired structure and grammatical controls that make text easier to read and understand"
+policy:
+  allow_implicit_invocation: false

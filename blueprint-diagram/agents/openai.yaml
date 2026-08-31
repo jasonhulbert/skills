@@ -1,0 +1,6 @@
+interface:
+  display_name: "Blueprint Diagram"
+  short_description: "Build consistent interactive isometric blueprint diagrams"
+  default_prompt: "Use $blueprint-diagram to turn a system or process into an interactive diagram."
+policy:
+  allow_implicit_invocation: true

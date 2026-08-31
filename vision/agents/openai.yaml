@@ -1,0 +1,5 @@
+interface:
+  display_name: "Vision"
+  short_description: "The user will invoke this skill when they want to turn rough ideas into high-altitude visions."
+policy:
+  allow_implicit_invocation: false
