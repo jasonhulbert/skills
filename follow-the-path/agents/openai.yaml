@@ -1,0 +1,5 @@
+interface:
+  display_name: "Follow the Path"
+  short_description: "Clarify an emerging idea while maintaining a traceable graph of its grounding decisions"
+policy:
+  allow_implicit_invocation: false
