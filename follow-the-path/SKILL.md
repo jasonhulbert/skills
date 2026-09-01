@@ -12,7 +12,7 @@ Clarify an emerging idea while maintaining a traceable graph of its grounding de
 
 Read `shallow`, `standard`, or `deep` from the invocation.
 
-Default to `standard` , state the depth once, and let the user change it.
+Default to `standard`, state the depth once, and let the user change it.
 
 - `shallow`: Resolve the purpose and first-order strategic choices. Stop before reversible detail unless it could invalidate the idea.
 - `standard`: Resolve high-impact or hard-to-reverse choices needed for the next meaningful action, including key assumptions, risks, and validation. Stop at choices that are cheap to reverse, safely deferrable, or evidence-dependent.
@@ -59,14 +59,6 @@ Resolution is relative to scope and depth. Do not require false certainty.
 
 At resolution or on request, ask whether the user wants the artifact saved and, if so, where.
 
-Produce a self-contained Markdown artifact with:
+Before producing the artifact, read and use [references/output-template.md](references/output-template.md). Preserve its section order, heading names, table columns, and empty-section convention at every depth. Replace every bracketed instruction. Do not add, remove, merge, or rename sections unless the user requests a different format.
 
-1. Status, depth, scope, and decision frontier
-2. Root purpose, beneficiary, success criteria, constraints, and non-goals
-3. A concise Mermaid graph using readable labels and IDs, or an indented relationship map if Mermaid is unavailable
-4. A decision register with each decision's status, grounding, alternatives or tradeoffs, and implications
-5. Evidence, assumptions, risks, and validation
-6. Open and deferred nodes with their resolution triggers
-7. A handoff stating what later work may treat as settled and what remains open
-
-Keep the register authoritative if the visual omits detail. Include enough context to stand without the original conversation. Do not turn the artifact into an implementation plan unless asked.
+Return the completed artifact without an introductory summary or closing commentary. Keep the decision register authoritative if the visual omits detail. Include enough context to stand without the original conversation. Keep entries concise without discarding grounding, tradeoffs, implications, or resolution triggers. Do not turn the artifact into an implementation plan unless asked.
