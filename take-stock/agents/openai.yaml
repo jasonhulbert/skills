@@ -1,0 +1,5 @@
+interface:
+  display_name: "Take Stock"
+  short_description: "Use when the user invokes this skill to understand current work without changing it."
+policy:
+  allow_implicit_invocation: false

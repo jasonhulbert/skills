@@ -1,0 +1,5 @@
+interface:
+  display_name: "Respec"
+  short_description: "Use when the user invokes this skill to revise an existing spec from new information or feedback."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Orchestrate Tickets"
+  short_description: "Use when the user invokes this skill to execute an approved ticket manifest."
+policy:
+  allow_implicit_invocation: false

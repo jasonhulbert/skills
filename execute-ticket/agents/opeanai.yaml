@@ -1,0 +1,5 @@
+interface:
+  display_name: "Execute Ticket"
+  short_description: "Use when the user invokes this skill to implement and verify one ready, right-sized ticket in a codebase."
+policy:
+  allow_implicit_invocation: false
