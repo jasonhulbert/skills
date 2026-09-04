@@ -1,7 +1,6 @@
 ---
 name: investigate-bug
-description: Investigate a bug, identify the root cause, propose a concrete fix,
-  and wait for user approval before implementing.
+description: Investigate a bug, identify the root cause, propose a concrete fix, and wait for user approval before implementing.
 ---
 
 # Investigate Bug
@@ -40,19 +39,24 @@ Use this structure:
 
 ```md
 Observed behavior:
+
 - [what happens]
 
 Expected behavior:
+
 - [what should happen]
 
 Reproduction status:
+
 - [reproduced / not reproduced / partially reproduced]
 - [exact trigger, test, or reason reproduction is incomplete]
 
 Root cause:
+
 - [specific explanation with file/function references]
 
 Confidence:
+
 - [high / medium / low] - [why]
 ```
 

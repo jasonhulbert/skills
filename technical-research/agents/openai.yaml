@@ -1,0 +1,5 @@
+interface:
+  display_name: "Technical Research"
+  short_description: "Research current technical options, compare them against the user's requirements, and recommend a solution with evidence, tradeoffs, and clear next steps."
+policy:
+  allow_implicit_invocation: false

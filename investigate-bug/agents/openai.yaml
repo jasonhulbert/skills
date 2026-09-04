@@ -1,0 +1,5 @@
+interface:
+  display_name: "Investigate Bug"
+  short_description: "Investigate a bug, identify the root cause, propose a concrete fix."
+policy:
+  allow_implicit_invocation: false

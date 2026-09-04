@@ -1,8 +1,8 @@
 ---
 name: spec
 description: Use this skill when the user invokes it to turn the current conversation into a spec — no interview, just synthesis of what you've already discussed.
-disable-model-invocation: true
 ---
+
 # Spec
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user — just synthesize what you already know.
@@ -11,7 +11,7 @@ This skill takes the current conversation context and codebase understanding and
 
 ### Step 1: Explore
 
-Explore the repo to understand the current state of the codebase, if you haven't already. 
+Explore the repo to understand the current state of the codebase, if you haven't already.
 
 ### Step 2: Identify behavioral slices
 
@@ -19,9 +19,9 @@ A behavioral slice is a coherent behavior with a clear trigger and outcome. Iden
 
 ### Step 3: Write the spec
 
->**Writing Style:** Avoid verbose, overly-dense or jargon-laden text. State a purpose or impact once and allow reasonable interpretation to cover cases. If the reader understands impact or purpose, most cases become derivable. State an idea once, at the depth needed to understand it's core premise - no deeper. A second pass over the same point in more detail is a common source of bloat.
+> **Writing Style:** Avoid verbose, overly-dense or jargon-laden text. State a purpose or impact once and allow reasonable interpretation to cover cases. If the reader understands impact or purpose, most cases become derivable. State an idea once, at the depth needed to understand it's core premise - no deeper. A second pass over the same point in more detail is a common source of bloat.
 
-Write the spec using the [template](#spec%20template) below to a temporary location on the users machine and present. Do not wrap the presentation in surrounding prose; present only the spec.
+Write the spec using the [template](#spec%20template) below. Remove any sentence that does not change implementation, verification, rollout, compatibility, or scope. State each fact in one section only. Write to a temporary location on the users machine and present. Do not wrap the presentation in surrounding prose; present only the spec.
 
 ### Step 4: Judgement
 
@@ -33,67 +33,53 @@ You must return to [Step 2](#step%202) if changes should be made to behavioral s
 
 Ask the user if and where they would like the file saved.
 
----
-
 #### Spec Template
 
-```
-# <project title>
+# [Spec Title]
 
-## Problem Statement
+## Goal
 
-The problem that the user is facing, from the user's perspective. Make the goal understanable even when the spec source was conversational or later becomes unavailable.
+[Explain the current problem and desired outcome in enough detail to stand alone.]
 
-## Solution
+## Behavioral Contract
 
-The solution to the problem, from the user's perspective.
+Describe each distinct trigger, context, and observable result. Use a compact table when behavior differs across callers, states, routes, or failure modes.
 
-## User Stories
+Include behavior that must remain unchanged.
 
-A comprehensive, numbered list of user stories. Each user story should be in the format of:
+## Implementation Constraints
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+Record only decisions that affect implementation:
 
-Example: "1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending"
+- Architectural boundary and execution order
+- Existing services or integrations that must be reused
+- Exact external identifiers, API contracts, and failure responses
+- Compatibility requirements
+- Persistence, schema, and configuration impact
+- Security and operational invariants
 
-This list of user stories should be extensive and cover all aspects of the feature.
+Do not include an exhaustive file inventory. Stable symbols or architectural seam names are allowed when they remove ambiguity.
 
-## Implementation Decisions
+## Verification
 
-A list of implementation decisions that were made. For example, this can include:
+List the smallest set of observable checks that proves the behavioral contract:
 
-- The modules that will be built/modified
-- The interfaces of those modules that will be modified
-- Technical clarifications from the developer
-- Architectural decisions
-- Library and Tooling decisions
-- Schema changes
-- API contracts
-- Specific interactions
+- Successful path
+- Denial and dependency-failure paths
+- Exclusions and precedence
+- Preserved behavior
+- Required fake or integration boundary
 
-Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
+Include verified prior art only when it changes the test approach.
 
-## Testing Decisions
+## Operational Prerequisites
 
-A list of testing decisions that were made. Include:
+Include only when deployment order, external provisioning, migration, or feature activation affects safety.
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
-- Prior art for the tests (i.e. similar types of tests in the codebase)
+## Assumptions and Open Decisions
 
-## Acceptance Criteria
-
-List the few things that must be true for the solution to be considered working. Focus on visible results and important failure cases. Do not repeat the user stories or describe how the solution will be built. Keep the list short, group related cases, and do not try to cover every possible input.
-
-## Assumptions and Open Questions
-
-List only assumptions or unanswered decisions that could change what gets built or how it works. State assumptions and why they matter plainly. Do not include minor uncertainties or questions asked just for completeness. Keep this short, and leave the section out if there is nothing important to add.
+Include only unresolved matters that could change the implementation. State the working assumption and the consequence if it is wrong. Do not repeat established decisions.
 
 ## Out of Scope
 
-A description of the things that are out of scope for this spec.
-
-## Further Notes
-
-Any further notes about the feature.
-```
+Include only plausible adjacent work whose exclusion prevents scope expansion.

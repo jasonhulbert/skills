@@ -1,7 +1,6 @@
 ---
 name: follow-the-path
 description: User-invoked workflow for clarifying an idea through high-value questions and a grounded decision graph. Invoke with $follow-the-path to resolve purpose, assumptions, tradeoffs, and consequential branches at shallow, standard, or deep depth.
-disable-model-invocation: true
 ---
 
 # Follow the Path

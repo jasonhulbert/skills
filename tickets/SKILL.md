@@ -1,7 +1,6 @@
 ---
 name: tickets
 description: Turn a plan, spec, or the current context into tickets, favoring right-sized, tracer-bullet vertical slices.
-disable-model-invocation: true
 ---
 # Tickets
 

@@ -10,6 +10,4 @@ Save the prompt to the temporary directory of the user's OS - not the current wo
 
 Do not duplicate content already captured in other artifacts (PRDs, plans, specs, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 
-Redact any sensitive information, such as API keys, passwords, or personally identifiable information.
-
 If the user passed arguments, treat them as a description of what the next session will focus on and tailor the prompt accordingly.

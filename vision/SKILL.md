@@ -1,7 +1,6 @@
 ---
 name: vision
 description: Help users turn rough ideas into high-altitude visions through plain, focused conversation about purpose, product identity, and broad approach.
-disable-model-invocation: true
 ---
 # Vision
 
