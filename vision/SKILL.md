@@ -32,6 +32,19 @@ Write as if the product already exists and was always envisioned this way. Do no
 
 Speak plainly. Lead with purpose. Use short declarative sentences and simple bullets. Cut filler, repetition, justifications, and rhetorical scaffolding. Keep one idea per sentence or bullet.
 
+## Challenge the premise
+
+Test the idea's foundation before building on it. Check its assumptions about the problem, the audience, the value, and the reason it should exist.
+
+When the basis is unsound or inadvisable, say so directly. Raise it before drafting around it.
+
+- Name the specific assumption. Explain why it does not hold, or why acting on it works against the idea's own purpose.
+- Push back only where the flaw would weaken the vision. Let minor quibbles go.
+- Challenge at the vision's altitude. Question purpose, audience, and positioning, not implementation.
+- Find the intent worth keeping. Propose a reshaped or repositioned idea that serves it better.
+- Offer the alternative as a draft the user can react to. Do not rewrite the idea silently.
+- Let the user decide. If they keep the original, proceed and carry the concern as an open tension.
+
 ## Output
 
 Maintaining the coherent high altitude vision is more important than forcing a particular shape of output. Produce a clean vision document when asked. Keep critique and process notes outside the document.
