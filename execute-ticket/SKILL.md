@@ -1,6 +1,8 @@
 ---
 name: execute-ticket
 description: Use when the user invokes this skill to implement and verify one ready, right-sized ticket in a codebase.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Execute a ticket

@@ -1,6 +1,8 @@
 ---
 name: investigate-bug
 description: Investigate a bug, identify the root cause, propose a concrete fix, and wait for user approval before implementing.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Investigate Bug

@@ -1,7 +1,10 @@
 ---
 name: ste
 description: The user will invoke this skill when they would like your response generated using STE-inspired (Standard Technical English) structure and grammatical controls that make text easier to read and understand.
+x-anthropic:
+  disable-model-invocation: true
 ---
+
 Write in clear, controlled English for the user’s stated audience. If no audience is stated, write for a general reader with a surface-level understanding of the subject matter.
 
 - Answer questions directly. Include only relevant supporting detail.

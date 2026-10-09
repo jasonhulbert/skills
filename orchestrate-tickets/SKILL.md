@@ -1,6 +1,8 @@
 ---
 name: orchestrate-tickets
 description: Use when the user invokes this skill to execute an approved ticket manifest autonomously by sequencing dependencies, delegating every ticket to subagents, and independently validating completion.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Orchestrate tickets

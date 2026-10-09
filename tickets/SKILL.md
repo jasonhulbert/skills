@@ -1,7 +1,10 @@
 ---
 name: tickets
 description: Turn a plan, spec, or the current context into tickets, favoring right-sized, tracer-bullet vertical slices.
+x-anthropic:
+  disable-model-invocation: true
 ---
+
 # Tickets
 
 Turn a plan, spec, or the current context into tickets, favoring tracer-bullet vertical slices.
@@ -16,13 +19,14 @@ Explore the repo to understand the current state of the codebase, if you haven't
 
 [**Preparatory refactoring**](https://martinfowler.com/articles/preparatory-refactoring-example.html) is the process of preemptively reshaping code before developing a new feature. Identify preparatory refactoring opportunities that would materially simplify or de-risk the planned work.
 
-Identify the source material from which the tickets are being produced. This may be a specification, plan, request, the current context. When multiple sources are used, 
+Identify the source material from which the tickets are being produced. This may be a specification, plan, request, the current context. When multiple sources are used,
 
 When an approved spec produced by `spec` is available, use its problem statement, solution, acceptance criteria, and project boundaries to orient the manifest. Do not require a spec.
 
 ### 2. Draft the breakdown
 
 Break the work into **vertical slice** tickets:
+
 - Each is an end-to-end slice that cuts through every relevant layer of a system. _Vertical_, NOT a horizontal slice of one layer.
 - A correctly made slice is verifiable on its own once its blockers are resolved.
 - Each slice is small enough for one focused implementation session.
@@ -37,6 +41,7 @@ Include worthwhile preparatory refactoring as separate tickets. Make them depend
 **Wide refactors may require an exception to the usual vertical-slicing approach.** A **wide refactor** is a mechanical change that affects many consumers at once, such as renaming a shared column or changing a widely used type. Do not force such changes into vertical slice tickets if their intermediate states would break existing consumers. Instead, sequence the work according to its compatibility needs and represent the steps as separate tickets with clear dependencies.
 
 When the old and new versions need to coexist during the transition, an **expand–contract** approach is often appropriate:
+
 - **Expand**: Add the new structure or interface alongside the old one while keeping existing consumers working.
 - **Migrate**: Move data and update callers or consumers to use the new version.
 - **Contract**: Remove the old structure or interface once nothing depends on it.
@@ -140,7 +145,6 @@ Describe the end-to-end behavior or enabling change this ticket provides.
 #### Manifest Template
 
 ```markdown
-
 # <project title>
 
 ## Project Summary
@@ -154,7 +158,7 @@ Briefly describe the problem and the intended outcome. Orient someone who has no
 
 ## Source Material
 
-- [Specification](<relative-path-to-spec.md>)
+- [Specification](relative-path-to-spec.md)
 - or: Derived from <plan, request, or current context>.
 
 ## Tickets
@@ -164,5 +168,6 @@ Briefly describe the problem and the intended outcome. Orient someone who has no
 Status: Pending
 
 Dependencies:
+
 - None
 ```

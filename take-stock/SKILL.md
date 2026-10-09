@@ -1,6 +1,8 @@
 ---
 name: take-stock
 description: Use when the user invokes this skill to understand current work without changing it.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Take Stock

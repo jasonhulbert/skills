@@ -1,7 +1,10 @@
 ---
 name: right-size
 description: Use this skill when the user invokes it to assess whether a task or work item is sufficiently defined and contextually bounded for one agent to execute and verify within a single conservative context window based on context fit rather than time or effort.
+x-anthropic:
+  disable-model-invocation: true
 ---
+
 # Right-size a work item
 
 Treat any assigned task, request, ticket, issue, investigation, deliverable, or change as a work item.
@@ -63,14 +66,14 @@ Context may be summarized or externalized when later work can rely on that repre
 
 Score each dimension from `0` to `2` using the closest behavioral anchor.
 
-| Dimension | 0 — Bounded | 1 — Contained risk | 2 — Significant risk |
-| --- | --- | --- | --- |
-| **Coherence** | One outcome and one working thread | Several tightly related outcomes sharing one execution path | Independent outcomes requiring separate execution paths |
-| **Coupling** | A limited set of concepts with clear relationships | Several concepts or systems must be coordinated, but their relationships are understood | Many unfamiliar or tightly coupled concepts must remain active together |
-| **Discovery** | Relevant context and working areas are known | Some bounded exploration is needed | Broad or open-ended exploration is needed before action |
-| **Decision load** | Important decisions are settled or routine | A few locally resolvable choices remain | Several consequential or competing approaches must be resolved |
-| **Continuity** | Intermediate context can be summarized or externalized safely | Some detail must remain active, but the working set stays contained | Substantial detail must remain active and cannot be reduced without meaningful loss |
-| **Verification** | Completion has one focused verification path | Completion requires several bounded checks | Verification is broad, cross-cutting, subjective, or likely to require a separate cycle |
+| Dimension         | 0 — Bounded                                                   | 1 — Contained risk                                                                      | 2 — Significant risk                                                                    |
+| ----------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Coherence**     | One outcome and one working thread                            | Several tightly related outcomes sharing one execution path                             | Independent outcomes requiring separate execution paths                                 |
+| **Coupling**      | A limited set of concepts with clear relationships            | Several concepts or systems must be coordinated, but their relationships are understood | Many unfamiliar or tightly coupled concepts must remain active together                 |
+| **Discovery**     | Relevant context and working areas are known                  | Some bounded exploration is needed                                                      | Broad or open-ended exploration is needed before action                                 |
+| **Decision load** | Important decisions are settled or routine                    | A few locally resolvable choices remain                                                 | Several consequential or competing approaches must be resolved                          |
+| **Continuity**    | Intermediate context can be summarized or externalized safely | Some detail must remain active, but the working set stays contained                     | Substantial detail must remain active and cannot be reduced without meaningful loss     |
+| **Verification**  | Completion has one focused verification path                  | Completion requires several bounded checks                                              | Verification is broad, cross-cutting, subjective, or likely to require a separate cycle |
 
 Score context risk rather than general difficulty. A demanding task may still score low when its working context is coherent and bounded.
 

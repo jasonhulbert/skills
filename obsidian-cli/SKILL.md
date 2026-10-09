@@ -1,6 +1,8 @@
 ---
 name: obsidian-cli
 description: Use the Obsidian CLI when the Obsidian MCP server is unavailable or lacks the needed operation.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Obsidian CLI Fallback

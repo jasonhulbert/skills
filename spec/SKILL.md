@@ -1,6 +1,8 @@
 ---
 name: spec
 description: Use this skill when the user invokes it to turn the current conversation into a spec — no interview, just synthesis of what you've already discussed.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Spec

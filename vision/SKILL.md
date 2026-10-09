@@ -1,7 +1,10 @@
 ---
 name: vision
 description: Help users turn rough ideas into high-altitude visions through plain, focused conversation about purpose, product identity, and broad approach.
+x-anthropic:
+  disable-model-invocation: true
 ---
+
 # Vision
 
 Use this skill when a user wants to develop an idea into a high-altitude vision.

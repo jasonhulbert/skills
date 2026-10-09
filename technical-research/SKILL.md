@@ -1,6 +1,8 @@
 ---
 name: technical-research
 description: Research current technical options, compare them against the user's requirements, and recommend a solution with evidence, tradeoffs, and clear next steps.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Technical Research
@@ -70,27 +72,34 @@ Keep the structure concise and decision-oriented:
 
 ```md
 Decision:
+
 - [what is being chosen]
 
 Requirements:
+
 - [must-haves]
 - [important tradeoffs]
 
 Options considered:
+
 - [option] - [1 sentence fit summary]
 - [option] - [1 sentence fit summary]
 
 Recommendation:
+
 - [top choice]
 - [why it wins for this case]
 
 Tradeoffs:
+
 - [what you give up]
 
 Risks:
+
 - [main risks and mitigations]
 
 Next step:
+
 - [the concrete follow-up action]
 ```
 

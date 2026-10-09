@@ -1,6 +1,8 @@
 ---
 name: respec
 description: Use when the user invokes this skill to revise an existing spec from new information or feedback while preserving coherence and challenging changes that effectively require a new spec.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Respec

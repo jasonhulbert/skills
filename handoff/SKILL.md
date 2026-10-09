@@ -2,6 +2,8 @@
 skill_name: handoff
 description: Compact the current conversation into a handoff document for another agent to pick up.
 argument-hint: "What will the next session be used for?"
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 Write a handoff prompt summarizing the current conversation so a fresh agent can continue the work.

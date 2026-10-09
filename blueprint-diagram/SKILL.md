@@ -1,6 +1,8 @@
 ---
 name: blueprint-diagrams
 description: Create or revise interactive browser-based isometric diagrams with a consistent blueprint drafting aesthetic, predefined entity and connector types, axis-routed flows, and pan-and-zoom navigation. Use for system maps, workflows, event flows, operating models, and other multi-part spatial diagrams. Do not use for ordinary charts or diagrams that do not benefit from isometric depth.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 # Isometric Blueprint Diagrams

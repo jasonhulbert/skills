@@ -1,6 +1,8 @@
 ---
 name: wat
 description: The user will invoke this skill when they want a response, idea or subject clarified.
+x-anthropic:
+  disable-model-invocation: true
 ---
 
 If the user provides text, assume it is what they want clarified. If no text is provided, your previous response is the assumed context.
