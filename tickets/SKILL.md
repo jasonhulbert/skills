@@ -17,11 +17,23 @@ Tracer-bullet vertical slices are thin, end-to-end increments of behavior throug
 
 Explore the repo to understand the current state of the codebase, if you haven't already.
 
+Identify the source material from which the tickets are being produced. This may be a specification, plan, request, the current context.
+
+Determine which source is authoritative. Use the first of these that applies:
+
+- A source the user explicitly designates.
+- An approved spec produced by `spec`.
+- A plan or explicit request from the user.
+
+If no source qualifies, or if more than one source qualifies at the same level, ask the user which source is authoritative.
+
+Treat every other source as supplemental. Use supplemental sources to fill gaps, add detail, and inform implementation decisions. Do not let a supplemental source override the authoritative source.
+
+Compare the sources for conflicts. A conflict is significant when resolving it one way or the other would change ticket scope, behavior, acceptance criteria, dependencies, or sequencing. When you find a significant conflict, stop and ask the user how to resolve it before drafting the breakdown. For each conflict, name the sources involved and state what each one says. Resolve conflicts that would not change the tickets in favor of the authoritative source.
+
 [**Preparatory refactoring**](https://martinfowler.com/articles/preparatory-refactoring-example.html) is the process of preemptively reshaping code before developing a new feature. Identify preparatory refactoring opportunities that would materially simplify or de-risk the planned work.
 
-Identify the source material from which the tickets are being produced. This may be a specification, plan, request, the current context. When multiple sources are used,
-
-When an approved spec produced by `spec` is available, use its problem statement, solution, acceptance criteria, and project boundaries to orient the manifest. Do not require a spec.
+From this resolved context, use the goal, behavioral contracts, constraints, risks and boundaries to orient the manifest. Do not require a spec.
 
 ### 2. Draft the breakdown
 
