@@ -1,0 +1,5 @@
+interface:
+  display_name: "Map It"
+  short_description: "Create or revise a map of bounded milestones"
+policy:
+  allow_implicit_invocation: false
