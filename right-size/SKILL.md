@@ -99,7 +99,7 @@ Ordinary execution discovery and locally resolvable decisions are compatible wit
 
 ## Report the assessment
 
-> When right-size-work-item is being used as a refinement gate within another workflow, follow that workflow’s output format. Preserve the judgment and required remediation, but do not emit the standalone assessment report unless requested.
+> When right-size is being used as a refinement gate within another workflow, follow that workflow’s output format. Preserve the judgment and required remediation, but do not emit the standalone assessment report unless requested.
 
 Provide:
 
