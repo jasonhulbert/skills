@@ -9,7 +9,11 @@ x-anthropic:
 
 Sketch the map before following a path. The map shows how milestones connect and keeps each path oriented toward the larger vision. It provides enough direction to choose the next path while leaving room to redraw what lies ahead.
 
-An optional step after `vision`. Each milestone is a path through `follow-the-path`, `spec`, and optional `tickets`.
+An optional step after `vision`. Each milestone is a path through `follow-the-path`, an optional `spec`, and implementation. Milestones are the default unit of implementation.
+
+## Operating Context
+
+Work happens in local development. Do not plan deployments, hosted environments, production data, metrics, user research, or rollout steps unless the user asks for them. A milestone is done when its result works locally.
 
 ## Establish context
 
@@ -31,8 +35,9 @@ Present the revised draft with a brief explanation of what changed and why. Use 
 
 Map the full vision using [references/output-template.md](references/output-template.md).
 
-- Prefer usable behavior. Allow enabling milestones that produce a needed capability. Discovery milestones must name a consequential question and the evidence or decision they will produce.
-- Size each milestone for one focused decision process and one coherent spec. Split independent problems hidden under one outcome. Combine fragments that only make sense together. A milestone may require several tickets.
+- Prefer usable behavior. Allow enabling milestones that produce a needed capability. Use a discovery milestone only when a consequential question cannot be answered during implementation. Name the question and the decision it will produce.
+- Size each milestone for one focused decision process, one coherent spec, and ideally one implementation run. Split independent problems hidden under one outcome. Combine fragments that only make sense together. A milestone that does not fit one implementation run can be split into tickets later.
+- Prefer fewer, larger milestones when they stay coherent. Every split adds a seam that someone must integrate and polish.
 - Distinguish required dependencies from preferred order.
 - Mark later scope provisional where earlier work may change it.
 
@@ -44,11 +49,11 @@ Assign each shared question to a milestone. Identify dependent milestones and wh
 
 ## Refine and resolve
 
-Present the draft, then ask one or two focused questions at a time. Recommend an answer with brief rationale and relevant tradeoffs. Prioritize changes to scope, dependencies, sequence, and completion conditions.
+Present the draft, then ask one or two focused questions at a time. Recommend an answer with brief rationale and relevant tradeoffs. Prioritize changes to scope, dependencies, sequence, and what each milestone delivers.
 
 Update the map as answers arrive. Use common words, consistent terms, and one idea per sentence. Keep discussion and superseded proposals outside the artifact.
 
-Resolve the map when it covers the vision, follows the sizing guidance, and gives every milestone observable completion conditions. Dependencies must have no unresolved cycles. Open questions must have owners and remain answerable before dependent work needs them.
+Resolve the map when it covers the vision, follows the sizing guidance, and states what works when each milestone is done. Dependencies must have no unresolved cycles. Open questions must have owners and remain answerable before dependent work needs them.
 
 No open question may block credible boundaries or sequencing. Later milestones may remain provisional. If interrupted, preserve the draft and identify blockers.
 
@@ -58,4 +63,4 @@ Drafts may be saved to a temporary directory on the user's machine. At resolutio
 
 Save resolved revisions to the supplied map unless the user chooses another destination.
 
-Save using the template. Recommend the next milestone by dependency. Include enough context for `follow-the-path` to proceed without the original conversation. Continue downstream only when requested.
+Save using the template. Recommend the next milestone by dependency. Link the vision and include enough context for `follow-the-path` to proceed without the original conversation. Continue downstream only when requested.
