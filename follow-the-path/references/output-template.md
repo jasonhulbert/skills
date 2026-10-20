@@ -20,6 +20,7 @@ Use this template for the final or user-requested artifact. Replace every bracke
 - **Beneficiary:** [Who benefits]
 - **Desired change:** [What should become different]
 - **Success criteria:** [Observable conditions for success]
+- **Delivery and quality expectations:** [Delivery stage and observable quality requirements; label provisional expectations]
 - **Constraints:** [Material limits with `constraint-*` IDs, or `None.`]
 - **Non-goals:** [Explicit exclusions, or `None.`]
 
@@ -85,6 +86,7 @@ flowchart TD
 - Use only `resolved`, `provisional`, `open`, or `deferred` for node status. The artifact-level resolution may be `Resolved`, `Partially resolved`, or `Unresolved`.
 - Keep the same sections at every depth. Change the amount of detail, not the structure.
 - Put one atomic item in each table row. Add rows as needed.
+- Make register rows stand alone. Include quality expectations, constraints, and delegated work in their implications.
 - Keep facts in **Evidence** and unverified beliefs in **Assumptions**.
 - State material alternatives even when the user accepted the recommendation quickly.
 - For an interrupted path, keep the same template, mark the artifact `Unresolved` or `Partially resolved`, and make blockers explicit in **Open and Deferred Nodes**.

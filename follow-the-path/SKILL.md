@@ -21,6 +21,8 @@ Default to `standard`, state the depth once, and let the user change it.
 
 Call the stopping boundary the **decision frontier**. Record what is deferred, why, and what would reopen it.
 
+Separate excluded work from delegated details. For delegated details, retain the required outcome and how to judge it.
+
 ## Build the Graph
 
 - Build the graph out from the first substantive answer.
@@ -43,6 +45,12 @@ For each question, provide your recommended answer and a 2-3 bullet justificatio
 
 If the user does not know an answer, define evidence, a test, a decision rule, or a safe deferral. If the user stops, produce the current graph and identify blockers without claiming resolution.
 
+## Establish the Quality Bar
+
+Establish the delivery stage and quality expectations from user intent, product conventions, or supplied references. Ask what could meet the functional requirements yet fail the user's purpose.
+
+Consider relevant needs within scope: usability, visual hierarchy, consistency, accessibility, screen sizes, interaction states, reliability, recovery, performance, and diagnostics. Resolve consequential tradeoffs at the selected depth. Delegate routine design and engineering choices.
+
 ## Test Resolution
 
 Treat the graph as resolved only when:
@@ -52,6 +60,7 @@ Treat the graph as resolved only when:
 - Assumptions remain labeled and have validation where uncertainty matters
 - No contradiction or open node blocks the next meaningful action
 - Provisional and deferred nodes explain why work can proceed and what would resolve them
+- Quality expectations support the next action; unresolved gaps are explicit
 - The decision frontier is explicit
 
 Resolution is relative to scope and depth. Do not require false certainty.
@@ -63,3 +72,5 @@ At resolution or on request, ask whether the user wants the artifact saved and, 
 Before producing the artifact, read and use [references/output-template.md](references/output-template.md). Preserve its section order, heading names, table columns, and empty-section convention at every depth. Replace every bracketed instruction. Do not add, remove, merge, or rename sections unless the user requests a different format.
 
 Return the completed artifact without an introductory summary or closing commentary. Keep the decision register authoritative if the visual omits detail. Include enough context to stand without the original conversation. Keep entries concise without discarding grounding, tradeoffs, implications, or resolution triggers. Do not turn the artifact into an implementation plan unless asked.
+
+The decision register may be the only input to `spec`. Make its rows understandable without other sections. Include relevant quality expectations, constraints, and delegated work. Label inferred expectations provisional.
