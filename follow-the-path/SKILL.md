@@ -1,13 +1,13 @@
 ---
 name: follow-the-path
-description: User-invoked workflow for clarifying an idea through high-value questions and a grounded decision graph. Invoke with $follow-the-path to resolve purpose, assumptions, tradeoffs, and consequential branches at shallow, standard, or deep depth.
+description: User-invoked workflow for resolving consequential decisions for an idea or a defined scope of work through focused questions and a grounded decision graph. Invoke with $follow-the-path at shallow, standard, or deep depth.
 x-anthropic:
   disable-model-invocation: true
 ---
 
 # Follow the Path
 
-Clarify an emerging idea while maintaining a traceable graph of its grounding decisions.
+Resolve consequential decisions for an idea or a defined scope of work through focused questions and a grounded decision graph.
 
 ## Set Depth
 
@@ -31,7 +31,7 @@ Ground each decision in a purpose, constraint, fact, or explicit user preference
 
 ## Follow the Path
 
-1. Recover known context. Establish only the missing purpose, beneficiary, desired change, success criteria, constraints, and non-goals.
+1. Recover known context. For a mapped milestone, start with its outcome, boundaries, and inherited constraints. Establish only the missing purpose, beneficiary, desired change, success criteria, constraints, and non-goals.
 2. Ask the highest-value unresolved question. Prioritize upstream ambiguity, contradictions, and blockers. Prefer one question at a time; ask up to three only when tightly coupled.
 3. Offer options only when real alternatives are visible. State their relevant tradeoffs without creating a false binary or steering the choice.
 4. Research discoverable facts within the authorized scope instead of asking the user. Keep evidence separate from judgments only the user can make.
