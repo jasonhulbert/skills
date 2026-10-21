@@ -1,6 +1,6 @@
 # Output Template
 
-Use this template for the final or user-requested artifact. Replace every bracketed instruction with project-specific content. Keep every section in the order shown. If a section has no entries, write `None.` beneath its heading instead of omitting it. Do not leave placeholder rows or bracketed instructions in the finished artifact.
+Use this template for the final or user-requested artifact. Replace every bracketed instruction with project-specific content. Keep every section in the order shown. If a section has no entries, write `None.` beneath its heading. Do not invent entries to fill a section. Do not leave placeholder rows or bracketed instructions in the finished artifact.
 
 ````markdown
 # [Decision topic]
@@ -12,15 +12,14 @@ Use this template for the final or user-requested artifact. Replace every bracke
 | Resolution | [Resolved, partially resolved, or unresolved] |
 | Depth | [Shallow, standard, or deep] |
 | Scope | [What this decision graph covers] |
-| Decision frontier | [What is intentionally outside the current resolution boundary and why] |
+| Sources | [Vision, map milestone, or other inputs, or `None.`] |
 
 ## Purpose
 
 - **Root purpose:** `purpose-1` — [The outcome that grounds downstream choices]
-- **Beneficiary:** [Who benefits]
+- **For whom:** [Who benefits]
 - **Desired change:** [What should become different]
-- **Success criteria:** [Observable conditions for success]
-- **Delivery and quality expectations:** [Delivery stage and observable quality requirements; label provisional expectations]
+- **What done looks like:** [The finished result a demanding user would accept, described in plain words. Include the quality bar.]
 - **Constraints:** [Material limits with `constraint-*` IDs, or `None.`]
 - **Non-goals:** [Explicit exclusions, or `None.`]
 
@@ -37,45 +36,37 @@ flowchart TD
 
 ## Decision Register
 
-| ID | Status | Decision | Grounded by | Alternatives and tradeoffs | Implications |
-| --- | --- | --- | --- | --- | --- |
-| `decision-1` | [resolved or provisional] | [Chosen direction] | [Node IDs and concise rationale] | [Consequential alternatives and why they were not chosen] | [Choices, constraints, or work this decision causes] |
-
-## Evidence
-
-| ID | Status | Evidence | Source | Relevance |
+| ID | Status | Decision | Why | Rejected alternatives |
 | --- | --- | --- | --- | --- |
-| `fact-1` | [resolved or provisional] | [Known or researched fact] | [Source or origin] | [What it grounds or changes] |
+| `decision-1` | [resolved or provisional] | [Chosen direction] | [Grounding node IDs and concise rationale] | [Consequential alternatives and why they were not chosen] |
 
-## Assumptions
+## Facts
 
-| ID | Status | Assumption | Why it matters | Validation |
+| ID | Fact | Source |
+| --- | --- | --- |
+| `fact-1` | [Known or researched fact that grounds a decision] | [Source or origin] |
+
+## Assumptions and Open Questions
+
+| ID | Status | Item | What it affects | How work proceeds |
 | --- | --- | --- | --- | --- |
-| `assumption-1` | [provisional, open, or deferred] | [Unverified belief] | [Decision or outcome affected] | [Evidence, test, rule, or trigger that would resolve it] |
+| `assumption-1` | [provisional, open, or deferred] | [Unverified belief or unresolved choice] | [Decision or outcome affected] | [Working assumption to use, or why this blocks work] |
 
-## Risks
+## Left to the Implementer
 
-| ID | Status | Risk | Consequence | Response or validation |
-| --- | --- | --- | --- | --- |
-| `risk-1` | [resolved, provisional, open, or deferred] | [What could invalidate or damage the path] | [Likely effect] | [Mitigation, test, decision rule, or acceptance rationale] |
-
-## Open and Deferred Nodes
-
-| ID | Status | Question or choice | Why it can remain open | Resolution trigger |
-| --- | --- | --- | --- | --- |
-| `question-1` | [open or deferred] | [Unresolved issue] | [Why work can proceed, or why this blocks resolution] | [Event, evidence, or decision that reopens or resolves it] |
+- [Choice delegated to implementer judgment, and the outcome that matters]
 
 ## Handoff
 
 ### Settled
 
-- [What later work may treat as decided or established]
+- [What later work may treat as decided]
 
 ### Still Open
 
-- [What later work must preserve as provisional, open, or deferred]
+- [What later work must treat as provisional, open, or deferred]
 
-### Next Meaningful Action
+### Next Step
 
 [The next action enabled by this graph, or `None.` if the user requested clarification only.]
 ````
@@ -86,8 +77,8 @@ flowchart TD
 - Use only `resolved`, `provisional`, `open`, or `deferred` for node status. The artifact-level resolution may be `Resolved`, `Partially resolved`, or `Unresolved`.
 - Keep the same sections at every depth. Change the amount of detail, not the structure.
 - Put one atomic item in each table row. Add rows as needed.
-- Make register rows stand alone. Include quality expectations, constraints, and delegated work in their implications.
-- Keep facts in **Evidence** and unverified beliefs in **Assumptions**.
+- Make register rows stand alone.
+- Keep facts in **Facts** and unverified beliefs in **Assumptions and Open Questions**.
 - State material alternatives even when the user accepted the recommendation quickly.
-- For an interrupted path, keep the same template, mark the artifact `Unresolved` or `Partially resolved`, and make blockers explicit in **Open and Deferred Nodes**.
+- For an interrupted path, keep the same template, mark the artifact `Unresolved` or `Partially resolved`, and make blockers explicit in **Assumptions and Open Questions**.
 - If the visual omits detail for readability, preserve it in the decision register or the relevant supporting table.

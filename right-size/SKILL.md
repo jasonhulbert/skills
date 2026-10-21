@@ -15,6 +15,10 @@ Do not estimate time or effort. Do not judge fit from file count, line count, wo
 
 A right-sized work item must not depend on a context reset, agent handoff, or supplemental planning cycle.
 
+Splitting has a cost. Every split adds a seam that someone must integrate and polish. Prefer the largest work item that still fits.
+
+Work happens in local development. Verification means what an agent can do locally: run tests, run the app, and use the feature. Do not require deployments, hosted environments, production data, metrics, or user research for verification unless the user asks for them.
+
 ## Establish the assessment boundary
 
 Use the work item and the context already available.
@@ -40,7 +44,7 @@ Evaluate each readiness gate:
 - **Purpose:** Is the intended outcome identifiable?
 - **Completion:** Are observable completion criteria known or safely inferable?
 - **Prerequisites:** Are essential inputs, access, dependencies, approvals, and prior decisions available or established?
-- **Verification:** Is there a feasible way to verify the completed outcome?
+- **Verification:** Is there a feasible local way to verify the completed outcome?
 
 Fail a gate only when the missing condition prevents reliable sizing or a bounded execution path. Do not fail a gate because normal execution discovery remains.
 
@@ -73,7 +77,7 @@ Score each dimension from `0` to `2` using the closest behavioral anchor.
 | **Discovery**     | Relevant context and working areas are known                  | Some bounded exploration is needed                                                      | Broad or open-ended exploration is needed before action                                 |
 | **Decision load** | Important decisions are settled or routine                    | A few locally resolvable choices remain                                                 | Several consequential or competing approaches must be resolved                          |
 | **Continuity**    | Intermediate context can be summarized or externalized safely | Some detail must remain active, but the working set stays contained                     | Substantial detail must remain active and cannot be reduced without meaningful loss     |
-| **Verification**  | Completion has one focused verification path                  | Completion requires several bounded checks                                              | Verification is broad, cross-cutting, subjective, or likely to require a separate cycle |
+| **Verification**  | Completion has one focused verification path                  | Completion requires several bounded checks                                              | Verification is broad, cross-cutting, or likely to require a separate cycle             |
 
 Score context risk rather than general difficulty. A demanding task may still score low when its working context is coherent and bounded.
 
@@ -95,7 +99,7 @@ Ordinary execution discovery and locally resolvable decisions are compatible wit
 
 ## Report the assessment
 
-> When right-size-work-item is being used as a refinement gate within another workflow, follow that workflow’s output format. Preserve the judgment and required remediation, but do not emit the standalone assessment report unless requested.
+> When right-size is being used as a refinement gate within another workflow, follow that workflow’s output format. Preserve the judgment and required remediation, but do not emit the standalone assessment report unless requested.
 
 Provide:
 

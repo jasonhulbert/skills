@@ -1,6 +1,6 @@
 # Map Template
 
-Use for drafts and saved maps. Replace placeholders. Repeat milestone entries. Write `None.` for empty sections.
+Use for drafts and saved maps. Replace placeholders. Repeat milestone entries. Write `None.` for empty sections. Do not invent entries to fill a section.
 
 Keep IDs consistent. Planning status describes the boundary: `Established` means supported by current context; `Provisional` means earlier work may change it. Resolved maps may contain provisional milestones.
 
@@ -41,9 +41,7 @@ Keep IDs consistent. Planning status describes the boundary: `Established` means
 
 **Dependencies:** [Milestone IDs or external prerequisites, required results, and when needed]
 
-**Completion conditions:**
-
-- [Observable condition proving the outcome]
+**Done when:** [What works locally when this milestone is complete, described from the user's point of view]
 
 **Inherited constraints:** [Decisions and limits to preserve]
 
@@ -59,11 +57,11 @@ Keep IDs consistent. Planning status describes the boundary: `Established` means
 
 | Assumption | Affected milestones or questions | Revisit when |
 | --- | --- | --- |
-| [Working assumption] | [IDs] | [Evidence, decision, or result] |
+| [Working assumption] | [IDs] | [Decision or implementation finding that would change it] |
 
 ## Next Path
 
 **Recommended milestone:** [ID and reason, or blocker to resolve first]
 
-**Handoff:** [Sources and decisions needed for this milestone's follow-the-path.]
+**Handoff:** [Vision, sources, and decisions needed for this milestone's follow-the-path.]
 ```
