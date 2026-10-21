@@ -47,7 +47,6 @@ Break the work into **vertical slice** tickets:
 
 - Each is an end-to-end slice that cuts through every relevant layer of a system. _Vertical_, NOT a horizontal slice of one layer.
 - A correctly made slice is verifiable on its own once its blockers are resolved.
-- Each slice is small enough for one focused implementation session.
 - Any preparatory refactoring should be done before the tickets it enables.
 
 When a spec is provided, use its "What Done Looks Like" as the coverage boundary. Every part of it must belong to some ticket.
