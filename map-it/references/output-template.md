@@ -4,6 +4,8 @@ Use for drafts and saved maps. Replace placeholders. Repeat milestone entries. W
 
 Keep IDs consistent. Planning status describes the boundary: `Established` means supported by current context; `Provisional` means earlier work may change it. Resolved maps may contain provisional milestones.
 
+Milestones added for work found during earlier milestones use `emergent-milestone-N.M` IDs. `N` is the planned milestone they follow in preferred order, or the last planned milestone for an addition at the end. `M` counts emergent milestones after that anchor and starts at 1. IDs do not nest and never change. Place the overview row and milestone entry after the anchor, in `M` order. Use the same fields as planned milestones.
+
 ```markdown
 # [Project name] Map
 

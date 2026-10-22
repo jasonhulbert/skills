@@ -1,6 +1,6 @@
 ---
 name: map-it
-description: The user will invoke this skill to map a large vision into bounded milestones or revise an existing map when requirements or findings change.
+description: The user will invoke this skill to map a large vision into bounded milestones, revise an existing map when requirements or findings change, or add work discovered during a milestone.
 x-anthropic:
   disable-model-invocation: true
 ---
@@ -25,11 +25,25 @@ For a new map, if the whole vision fits one focused decision process and one coh
 
 When re-invoked against a map, read it alongside new requirements, findings, and milestone progress. Identify what remains valid and what changes the work ahead. Resolve conflicts that block a credible revision.
 
+If the user only wants to add work found during a milestone, use [Add discovered work](#add-discovered-work) instead.
+
 Revise affected paths or replace them when their boundaries no longer fit. Preserve completed outcomes and account for work in progress. Update dependencies, shared questions, assumptions, and the next path.
 
 Keep IDs for continuing milestones. Give replacement paths new IDs and identify which they replace. Repair references and flag downstream decisions, specs, or tickets that need review.
 
 Present the revised draft with a brief explanation of what changed and why. Use the same refinement and resolution process below.
+
+## Add discovered work
+
+When the user brings work found during a milestone, add it without re-planning the map.
+
+Work out milestone progress from the map, related decisions, specs, tickets, and the codebase. If you cannot find these documents or they do not show clear progress, ask the user which milestones are done. Ask only what this evidence does not settle.
+
+Place the work where it fits. Unfinished scope of the current milestone stays there, so that milestone does not claim done too early. Work that fits an upcoming milestone widens it. Work outside the vision goes to the user to decide. Only remaining work becomes an emergent milestone. Size it like any milestone and name it with the template's ID pattern. Record the finding and its source milestone in its outcome and supporting context.
+
+Switch to full revision when the work changes other milestones' boundaries or a widened milestone breaks the sizing guidance.
+
+Present the proposed change. After approval, edit the map in place. Change only the affected milestone entries and overview rows, dependencies, supporting context, shared questions, assumptions, and next path. Flag affected decisions, specs, or tickets.
 
 ## Draft the map
 

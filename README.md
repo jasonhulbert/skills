@@ -36,7 +36,7 @@ Both paths end with an integration and polish ticket that reviews the combined r
 | Skill | Purpose |
 | --- | --- |
 | `vision` | Shape a rough idea into a short, high-level vision: what it is, why it exists, and the broad approach. Challenges weak premises. |
-| `map-it` | Break a large vision into milestones with dependencies. Revise the map as work reveals changes. |
+| `map-it` | Break a large vision into milestones with dependencies. Revise the map as work reveals changes. Add work found during a milestone without re-planning the whole map. |
 | `follow-the-path` | Resolve consequential decisions through focused questions. Produces a decision artifact. Choose `shallow`, `standard`, or `deep` depth. |
 | `spec` | Turn the conversation, vision, and decisions into an implementation brief. Does not interview you. |
 | `respec` | Revise an existing spec from new information without eroding what still holds. |

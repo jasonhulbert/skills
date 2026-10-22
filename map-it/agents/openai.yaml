@@ -1,5 +1,5 @@
 interface:
   display_name: "Map It"
-  short_description: "Create or revise a map of bounded milestones"
+  short_description: "Create or revise a milestone map, or add discovered work"
 policy:
   allow_implicit_invocation: false
