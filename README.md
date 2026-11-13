@@ -57,7 +57,6 @@ Both paths end with an integration and polish ticket that reviews the combined r
 | `blueprint-diagram` | Build interactive isometric diagrams in a blueprint style for systems, workflows, and event flows. |
 | `handoff` | Compress the current conversation into a document another agent can pick up. |
 | `investigate-bug` | Find a bug's root cause and propose a fix. Waits for approval before changing code. |
-| `browser-use` | Use local Chrome through browser-use MCP tools, with a CLI fallback. |
 | `obsidian-cli` | Use the Obsidian CLI when the Obsidian MCP server is unavailable or lacks an operation. |
 | `rundown` | Summarize in plain language what was merged or deployed across one or more repositories in a timeframe. |
 | `ste` | Write a response with Standard Technical English structure and grammar controls. |
