@@ -11,16 +11,16 @@ Execute an approved ticket set through a subagent team while retaining responsib
 
 ## Operating Context
 
-Work happens in local development. Verification means what an agent can do locally: run tests, run the app, and use the feature. Do not deploy, use hosted environments, or seek production data. If a criterion can only be confirmed outside local development, verify what you can locally, note the rest, and do not block on it.
+Develop and verify locally where practical. Use authorized services when local substitutes would distort the solution or provide inadequate evidence. Deployment of unfinished work is not a routine ticket dependency. Changes to shared environments require user authorization. Do not seek production data unless requested.
 
 ## Orient
 
 - Read the governing instructions and complete manifest.
 - Read the linked `spec.md`, `vision.md`, and `decisions.md` when present. They describe what the finished product should be.
-- Use the manifest to understand the project outcome and dependencies.
+- Use the manifest to understand the project outcome, dependencies, and intended operating conditions.
 - Read each ticket when it becomes a candidate for delegation.
 - Verify existing workspace state and dependency outcomes instead of trusting ticket order or status.
-- Maintain a compact working ledger of each ticket's accepted outcome and evidence.
+- Keep a compact ledger of accepted outcomes and evidence in working context.
 
 ## Track status
 
@@ -33,6 +33,8 @@ Act as the single writer for ticket status during orchestration. Use only `Pendi
 - Update both copies to `Status: Complete` only after independently accepting the ticket.
 - Return both copies to `Status: In Progress` before corrective work when later evidence invalidates an accepted ticket. Use `Status: Blocked` instead when correction cannot proceed, and reassess affected dependents.
 - Apply each transition to both files before scheduling more work. Repair any partial update immediately.
+
+During execution, change workflow artifacts only through status synchronization unless the user requests a revision. Keep discoveries, blockers, and evidence in responses or working context. Do not add them to workflow artifacts or companion reports.
 
 ## Schedule
 
@@ -50,9 +52,10 @@ Act as the single writer for ticket status during orchestration. Use only `Pendi
 - Provide accepted dependency outcomes, workspace coordination constraints, and only task-specific context not captured in those files.
 - Require the subagent to use `execute-ticket` and stay within the assigned ticket.
 - Tell the subagent that orchestration owns status synchronization and that it must not edit either status line.
+- Require discoveries and evidence in responses, never additions to workflow artifacts or companion reports.
 - Direct consequential interpretations, scope changes, deviations, and blockers to you instead of the user.
 - Do not permit silent ticket splitting, omitted acceptance criteria, or redefined completion.
-- Require a `Complete` or `Blocked` result with changed files, verification results, anything not verifiable locally, relevant decisions, and follow-up work noticed outside the ticket.
+- Require a `Complete` or `Blocked` result with changed files, verification evidence, relevant decisions, outstanding checks or blockers, and follow-up work outside the ticket.
 
 Resolve escalations from approved sources and repository evidence when the answer is established. Ask the user only when the unresolved choice would change observable behavior, scope, a public contract, data compatibility, security posture, or an irreversible result.
 
@@ -60,20 +63,21 @@ Resolve escalations from approved sources and repository evidence when the answe
 
 - Treat a subagent's completion report as a claim.
 - Inspect the ticket's changes and use the result in the integrated workspace yourself.
-- Judge the ticket against only its accepted dependencies, not concurrent sibling work.
+- Judge the ticket against only its accepted dependencies, not concurrent sibling work. Individual tickets need not be independently releasable.
 - Judge against the acceptance criteria and the spec's quality bar for that part of the product. Return work that meets the criteria but feels unfinished.
+- Assess relevant deployment or transition procedures for feasibility, including work handed off for later execution.
 - Accept related cleanup that improves the result. Reject unrelated work, concealed decisions, and accidental changes.
 - Return specific deficiencies to a subagent and reassess the resulting work.
-- Mark a ticket `Complete` in both locations only after it is finished and verified.
+- Mark a ticket `Complete` in both locations only after it is finished and verified. Defer release checks only when available evidence supports correctness and viability.
 - Unblock dependents only from accepted tickets.
-- Collect follow-up work that subagents report. Route it to the integration and polish ticket when it fits the project outcome.
+- Collect optional follow-up work for the integration and polish ticket when it fits the project outcome. Required corrections stay with the affected ticket.
 
 ## Finish
 
 The integration and polish ticket runs last. When delegating it, include the collected follow-up work.
 
-After all tickets are accepted, use the integrated product against the spec's "What Done Looks Like" and the vision. When the result falls short, delegate focused fixes and judge them the same way.
+After all tickets are accepted, use the integrated product against the spec's "What Done Looks Like" and the vision. Judge any required transition as part of that outcome. When the result falls short, delegate focused fixes and judge them the same way.
 
-Do not commit, push, publish, or deploy unless requested. Make no ticket-state changes other than the status synchronization defined above.
+Do not commit, push, publish, or deploy unless requested.
 
-Report `Complete` or `Blocked`, ticket outcomes, how the finished product compares to the intended outcome, and only relevant unresolved risks.
+Report `Complete` or `Blocked`, ticket outcomes, and how the finished product compares to the intended outcome. Distinguish blockers from deferred environment checks and include relevant handoff requirements.

@@ -1,6 +1,8 @@
 # Skills
 
-Personal agent skills for Claude Code and Codex. Each directory is one skill. Install a skill by symlinking its directory into `~/.claude/skills`. Every skill is user-invoked only, so an agent never triggers one on its own.
+Personal agent skills for Claude Code and Codex. Each directory is one skill. Install a skill by linking its repository directory directly into `~/.claude/skills` for Claude Code and `~/.agents/skills` for Codex.
+
+Invocation policy is defined per skill. Workflow skills require user invocation. `browser-use` supports automatic use when a task needs browser access. Provider-specific settings use namespaced frontmatter such as `x-anthropic` and `agents/openai.yaml`.
 
 ## Planning and Delivery
 
@@ -9,9 +11,12 @@ These skills take an idea from rough intent to a finished feature. They settle w
 ### Principles
 
 - Plan intent and consequential decisions. Leave routine detail to the implementer.
-- Done means a finished result the intended user would accept. Acceptance criteria are a minimum, not the goal.
-- Work happens in local development. No skill asks for deployments, hosted environments, production data, metrics, or rollout plans unless you request them.
+- Done means a finished result the intended user would accept in its intended operating conditions. Acceptance criteria are a minimum, not the goal.
+- Develop and verify locally where practical, using authorized services when needed. Address deployment or transition feasibility when relevant.
+- Deployment of unfinished work is not a routine implementation dependency. Deployment execution and changes to shared environments require your authorization.
 - The vision and decisions travel with the work to the agent that builds it.
+- Workflow artifacts retain intent, scope, decisions, and status. Revise existing fields; keep research and execution reports in the conversation.
+- Use relative links only to workflow artifacts within the designated directory tree. Exclude codebase and outside references. Agents inspect current code as needed.
 - Split work only when it does not fit one implementation run. Every split adds a seam that someone must polish.
 
 ### Choosing a Flow
@@ -22,7 +27,7 @@ These skills take an idea from rough intent to a finished feature. They settle w
 | Medium: one coherent feature | `vision` → `follow-the-path` → `spec` → implement | The spec, the decision artifact, and the vision |
 | Large: several milestones | `vision` → `map-it` → for each milestone: `follow-the-path` → `spec` → implement | One spec per milestone, plus the vision and the milestone's decisions |
 
-To implement directly, give the agent the spec or decision artifact with a prompt like this: "Implement this. Use the vision and decisions for intent. Use your judgment for anything they don't settle. You're done when the result matches 'What Done Looks Like', not when the tests pass."
+To implement directly, give the agent the spec or decision artifact with a prompt like this: "Implement this. Use the vision and decisions for intent. Use your judgment for anything they don't settle. You're done when the result matches 'What Done Looks Like', not when the tests pass. Report discoveries and verification in your response. Do not edit workflow artifacts or add companion reports unless I request it."
 
 Use tickets only when a milestone does not fit one implementation run. Run `tickets` on the spec. Then choose how much oversight you want:
 
@@ -42,7 +47,7 @@ Both paths end with an integration and polish ticket that reviews the combined r
 | `respec` | Revise an existing spec from new information without eroding what still holds. |
 | `tickets` | Split a spec into right-sized vertical slices that end with a polish ticket. Recommends skipping tickets when the spec fits one run. |
 | `right-size` | Judge whether a work item fits one agent run. `tickets` uses it as a gate. |
-| `execute-ticket` | Implement one ticket to a finished result and verify it locally. |
+| `execute-ticket` | Implement and verify one ticket to a finished result. |
 | `orchestrate-tickets` | Run a ticket set through subagents, judge each result, and finish with a product-level review. |
 
 ## Other Skills
@@ -52,7 +57,9 @@ Both paths end with an integration and polish ticket that reviews the combined r
 | `blueprint-diagram` | Build interactive isometric diagrams in a blueprint style for systems, workflows, and event flows. |
 | `handoff` | Compress the current conversation into a document another agent can pick up. |
 | `investigate-bug` | Find a bug's root cause and propose a fix. Waits for approval before changing code. |
+| `browser-use` | Use local Chrome through browser-use MCP tools, with a CLI fallback. |
 | `obsidian-cli` | Use the Obsidian CLI when the Obsidian MCP server is unavailable or lacks an operation. |
+| `rundown` | Summarize in plain language what was merged or deployed across one or more repositories in a timeframe. |
 | `ste` | Write a response with Standard Technical English structure and grammar controls. |
 | `take-stock` | Summarize the current state of work without changing it. |
 | `technical-research` | Compare current technical options against your requirements and recommend one with evidence. |

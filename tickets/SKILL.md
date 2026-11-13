@@ -15,7 +15,7 @@ Tickets exist to fit work into implementation runs. They are not the definition 
 
 ## Operating Context
 
-Work happens in local development. Do not write tickets or acceptance criteria that require deployments, hosted environments, production data, metrics, user research, or rollout steps unless the user asks for them. Verification means what an agent can do locally: run tests, run the app, and use the feature.
+Plan for local verification where practical or use authorized services when needed. Do not make deployment of unfinished work a routine ticket dependency. Deployment execution and changes to shared environments require user authorization. Do not require production data, metrics, or user research unless requested.
 
 ## Process
 
@@ -46,16 +46,16 @@ Apply `right-size` to the whole source first. If it is `Right`, recommend implem
 Break the work into **vertical slice** tickets:
 
 - Each is an end-to-end slice that cuts through every relevant layer of a system. _Vertical_, NOT a horizontal slice of one layer.
-- A correctly made slice is verifiable on its own once its blockers are resolved.
+- A slice is verifiable on its own once its blockers are resolved. It need not be independently releasable.
 - Any preparatory refactoring should be done before the tickets it enables.
 
-When a spec is provided, use its "What Done Looks Like" as the coverage boundary. Every part of it must belong to some ticket.
+When a spec is provided, use its "What Done Looks Like" as the coverage boundary. Assign every required outcome and relevant transition requirement to a ticket.
 
 Each ticket must contain its **dependencies**; the other tickets that must complete before it can start. A ticket with no dependencies can start immediately.
 
 Include worthwhile preparatory refactoring as separate tickets. Make them dependencies of the tickets they enable.
 
-**Wide refactors may require an exception to the usual vertical-slicing approach.** A **wide refactor** is a mechanical change that affects many consumers at once, such as renaming a shared column or changing a widely used type. Do not force such changes into vertical slice tickets if their intermediate states would break existing consumers. Instead, sequence the work according to its compatibility needs and represent the steps as separate tickets with clear dependencies.
+**Wide refactors may require an exception to the usual vertical-slicing approach.** A **wide refactor** is a mechanical change that affects many consumers at once, such as renaming a shared column or changing a widely used type. Do not force such changes into vertical slice tickets if their intermediate states would break existing consumers. Instead, sequence the work according to its compatibility, availability, and recovery needs. Represent the steps as separate tickets with clear dependencies.
 
 When the old and new versions need to coexist during the transition, an **expand–contract** approach is often appropriate:
 
@@ -63,9 +63,9 @@ When the old and new versions need to coexist during the transition, an **expand
 - **Migrate**: Move data and update callers or consumers to use the new version.
 - **Contract**: Remove the old structure or interface once nothing depends on it.
 
-Use a different sequencing strategy when the change can be made safely in one coordinated pass or when expand–contract would add unnecessary complexity.
+Use a different sequencing strategy when a coordinated change is safe or expand–contract adds unnecessary complexity. Distinguish implementation dependencies from eventual release order.
 
-End every breakdown with an **integration and polish** ticket that depends on all other tickets. It reviews the integrated result against the spec's "What Done Looks Like" and the vision, then fixes inconsistencies, rough edges, missing states, and seams between tickets.
+End every breakdown with an **integration and polish** ticket that depends on all other tickets. It reviews the integrated behavior and any required transition against the spec's "What Done Looks Like" and the vision, then fixes inconsistencies, rough edges, missing states, and seams between tickets.
 
 ### 3. Right-size the candidate tickets
 
@@ -108,17 +108,21 @@ After the user approves the breakdown, create one Markdown file for each ticket 
 - Use each ticket's index and title consistently in the ticket file, manifest, and dependency references.
 - Give every ticket exactly one plain `Status: Pending` line immediately below its title.
 - Repeat that line immediately below the ticket's linked heading in the manifest.
-- Avoid specific file paths or code snippets — they go stale fast.
+- Describe behavior and constraints. Omit code snippets and implementation recipes.
 
-Give the manifest a project title, project summary, project outcome, and source-material references.
+Give the manifest a project title, project summary, project outcome, and references to workflow source artifacts.
 
-Copy the context implementers need into the generated directory and link each copy from the manifest:
+Use relative links only to workflow artifacts in the designated workflow directory tree, defaulting to the generated directory. Exclude codebase and outside references, including plain-text paths. Do not widen the boundary. Resolve and check links against the intended saved layout when the destination is known.
+
+Reference existing sources within the boundary. Copy only these core artifacts when needed from outside it:
 
 - An approved spec as `spec.md`.
 - The vision, when available, as `vision.md`.
 - The decision artifact from `follow-the-path`, when available, as `decisions.md`.
 
-Do not create substitutes for sources that do not exist.
+Link copies from the manifest. Preserve their intent and decisions, rebase internal links, and remove outside references. Do not copy supporting material or invent missing sources.
+
+Keep tickets and manifests within their templates. Revise existing fields; omit research and execution reports, including companion files.
 
 Use only `Pending`, `In Progress`, `Blocked`, and `Complete` as ticket status values. The ticket file and manifest entry must always contain the same value. `execute-ticket` or `orchestrate-tickets` updates both lines together as execution progresses.
 
@@ -152,11 +156,11 @@ Describe the end-to-end behavior or enabling change this ticket provides, from t
 
 ## Implementation Decisions
 
-- Decisions, constraints, interfaces, or compatibility requirements relevant to this ticket.
+- Consequential decisions, constraints, interfaces, and operating or compatibility requirements.
 
 ## Testing Notes
 
-- Only when the testing approach is not obvious from the codebase.
+- Non-obvious verification methods, required evidence, and deferred release checks.
 
 ## Open Questions
 
@@ -171,6 +175,8 @@ Omit Testing Notes, Open Questions, or Out of Scope when they would be empty.
 
 #### Manifest Template
 
+Adjust source paths to the saved layout and omit absent sources.
+
 ```markdown
 # <project title>
 
@@ -180,7 +186,7 @@ Briefly describe the problem and the intended outcome. Orient someone who has no
 
 ## Project Outcome
 
-Describe the finished result in a few sentences. Point to the spec's "What Done Looks Like" when a spec exists.
+Describe the finished result and consequential operating constraints in a few sentences. Point to the spec's "What Done Looks Like" when a spec exists.
 
 ## Source Material
 

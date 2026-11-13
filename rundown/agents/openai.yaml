@@ -1,0 +1,5 @@
+interface:
+  display_name: "Rundown"
+  short_description: "Summarize what was merged or deployed across repositories in a timeframe."
+policy:
+  allow_implicit_invocation: false

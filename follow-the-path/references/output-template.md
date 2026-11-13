@@ -1,84 +1,54 @@
 # Output Template
 
-Use this template for the final or user-requested artifact. Replace every bracketed instruction with project-specific content. Keep every section in the order shown. If a section has no entries, write `None.` beneath its heading. Do not invent entries to fill a section. Do not leave placeholder rows or bracketed instructions in the finished artifact.
+Use this template for the final or user-requested artifact. Replace every bracketed instruction with project-specific content. Keep the sections in the order shown. If a section has nothing to say, write `None.` beneath its heading. Do not invent content to fill a section.
 
 ````markdown
 # [Decision topic]
 
-## Status
-
-| Field | Value |
-| --- | --- |
-| Resolution | [Resolved, partially resolved, or unresolved] |
-| Depth | [Shallow, standard, or deep] |
-| Scope | [What this decision graph covers] |
-| Sources | [Vision, map milestone, or other inputs, or `None.`] |
+[A short opening paragraph. Say what this outline covers, the depth it was resolved at, and whether it is resolved, partially resolved, or unresolved. Link relevant workflow sources and milestone IDs.]
 
 ## Purpose
 
-- **Root purpose:** `purpose-1` — [The outcome that grounds downstream choices]
-- **For whom:** [Who benefits]
-- **Desired change:** [What should become different]
-- **What done looks like:** [The finished result a demanding user would accept, described in plain words. Include the quality bar.]
-- **Constraints:** [Material limits with `constraint-*` IDs, or `None.`]
-- **Non-goals:** [Explicit exclusions, or `None.`]
+[Explain who this serves, what should change for them, and why that matters. Describe the constraints and non-goals that bound the work, including choices excluded from scope.]
 
-## Decision Graph
+## What Done Looks Like
 
-```mermaid
-flowchart TD
-    purpose-1["purpose-1 [resolved]: [Readable label]"]
-    decision-1["decision-1 [resolved]: [Readable label]"]
-    purpose-1 -->|grounds| decision-1
-```
+[Describe the finished result a demanding user would accept. Include the quality bar in plain words.]
 
-[Replace the example with the concise graph. If Mermaid is unavailable, use an indented relationship map with the same node IDs and labeled relationships.]
+## Decisions
 
-## Decision Register
+### [Short name for the decision]
 
-| ID | Status | Decision | Why | Rejected alternatives |
-| --- | --- | --- | --- | --- |
-| `decision-1` | [resolved or provisional] | [Chosen direction] | [Grounding node IDs and concise rationale] | [Consequential alternatives and why they were not chosen] |
+[A short paragraph. Say what was chosen and why. Name what it rests on, such as the purpose, a constraint, a fact and where it came from, or the user's preference. If it depends on an unverified assumption, say so. If it is provisional, say so and say what would change it. Mention the alternatives someone might reasonably reopen, and why they were not chosen.]
 
-## Facts
+## Open Questions and Assumptions
 
-| ID | Fact | Source |
-| --- | --- | --- |
-| `fact-1` | [Known or researched fact that grounds a decision] | [Source or origin] |
-
-## Assumptions and Open Questions
-
-| ID | Status | Item | What it affects | How work proceeds |
-| --- | --- | --- | --- | --- |
-| `assumption-1` | [provisional, open, or deferred] | [Unverified belief or unresolved choice] | [Decision or outcome affected] | [Working assumption to use, or why this blocks work] |
+[Describe what is not settled. For each item, say what it affects and how work can proceed without it. If an item blocks work, say so plainly.]
 
 ## Left to the Implementer
 
-- [Choice delegated to implementer judgment, and the outcome that matters]
+[Describe the choices left to implementer judgment and the outcome that matters for each.]
 
-## Handoff
+## Next Step
 
-### Settled
-
-- [What later work may treat as decided]
-
-### Still Open
-
-- [What later work must treat as provisional, open, or deferred]
-
-### Next Step
-
-[The next action enabled by this graph, or `None.` if the user requested clarification only.]
+[The next action this outline enables, or `None.` if the user requested clarification only.]
 ````
 
-## Template Rules
+## Guidance
 
-- Use the exact node IDs from the graph in every table and cross-reference.
-- Use only `resolved`, `provisional`, `open`, or `deferred` for node status. The artifact-level resolution may be `Resolved`, `Partially resolved`, or `Unresolved`.
+- Write for an implementer who was not in the conversation. Explain intent and reasons so they can make good choices in situations the outline does not cover.
+- Describe decisions as choices with reasons, not as commands. Reserve "must" and "never" for hard constraints.
+- Order decisions so each one comes after the decisions it depends on. The outline should read as the path that was followed.
+- Make the standing of each statement clear in the sentence itself. Say whether it is decided, provisional, a fact with its origin, or an assumption.
+- When a decision or open question corresponds to a shared question from a map, mention the question ID where it is discussed.
 - Keep the same sections at every depth. Change the amount of detail, not the structure.
-- Put one atomic item in each table row. Add rows as needed.
-- Make register rows stand alone.
-- Keep facts in **Facts** and unverified beliefs in **Assumptions and Open Questions**.
-- State material alternatives even when the user accepted the recommendation quickly.
-- For an interrupted path, keep the same template, mark the artifact `Unresolved` or `Partially resolved`, and make blockers explicit in **Assumptions and Open Questions**.
-- If the visual omits detail for readability, preserve it in the decision register or the relevant supporting table.
+- For an interrupted path, say so in the opening paragraph and name the blockers under **Open Questions and Assumptions**.
+- Add a diagram only when the user requests one. The prose remains the source of truth.
+- References follow the skill's artifact boundary.
+
+## Writing Style
+
+- Use plain, common words. Write one idea per sentence and prefer active voice.
+- Use one term for each concept. Define an unfamiliar term at first use.
+- State conditions and consequences explicitly. Do not drop a condition, exception, or uncertainty to make a sentence shorter.
+- Avoid idioms, filler, stacked parentheticals, and nested clauses.

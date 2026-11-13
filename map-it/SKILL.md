@@ -13,13 +13,19 @@ An optional step after `vision`. Each milestone is a path through `follow-the-pa
 
 ## Operating Context
 
-Work happens in local development. Do not plan deployments, hosted environments, production data, metrics, user research, or rollout steps unless the user asks for them. A milestone is done when its result works locally.
+Plan for local development and verification where practical. Do not make deployment of unfinished work a routine dependency between milestones. Deployment execution and changes to shared environments require user authorization. Do not require production data, metrics, or user research unless requested.
 
 ## Establish context
 
-Read the vision and available context. Ask only critical questions needed for a credible draft. Skip initial questions when the context is sufficient.
+Read the vision, available context, and intended operating conditions. Ask only critical questions needed for a credible draft. Skip initial questions when the context is sufficient.
 
 For a new map, if the whole vision fits one focused decision process and one coherent spec, recommend going directly to `follow-the-path`.
+
+## Artifact boundary
+
+Use relative links only to workflow artifacts in the designated workflow directory tree, defaulting to the artifact's destination directory. Exclude codebase and outside references, including plain-text paths. Do not widen the boundary or copy sources to bypass it. Resolve links for the final location; omit them while that location is unknown.
+
+Inspect sources as needed. Retain only conclusions affecting milestone outcomes, scope, dependencies, constraints, or questions. Revise existing fields. Do not add research or execution reports, including companion files.
 
 ## Reorient an existing map
 
@@ -39,11 +45,11 @@ When the user brings work found during a milestone, add it without re-planning t
 
 Work out milestone progress from the map, related decisions, specs, tickets, and the codebase. If you cannot find these documents or they do not show clear progress, ask the user which milestones are done. Ask only what this evidence does not settle.
 
-Place the work where it fits. Unfinished scope of the current milestone stays there, so that milestone does not claim done too early. Work that fits an upcoming milestone widens it. Work outside the vision goes to the user to decide. Only remaining work becomes an emergent milestone. Size it like any milestone and name it with the template's ID pattern. Record the finding and its source milestone in its outcome and supporting context.
+Place the work where it fits. Unfinished scope of the current milestone stays there, so that milestone does not claim done too early. Work that fits an upcoming milestone widens it. Work outside the vision goes to the user to decide. Only remaining work becomes an emergent milestone. Size it like any milestone and name it with the template's ID pattern. Record its effect on the outcome and source milestone ID in the affected entry.
 
 Switch to full revision when the work changes other milestones' boundaries or a widened milestone breaks the sizing guidance.
 
-Present the proposed change. After approval, edit the map in place. Change only the affected milestone entries and overview rows, dependencies, supporting context, shared questions, assumptions, and next path. Flag affected decisions, specs, or tickets.
+Present the proposed change. After approval, edit the map in place. Change only the affected milestone entries and overview rows, dependencies, workflow references, shared questions, assumptions, and next path. Flag affected decisions, specs, or tickets.
 
 ## Draft the map
 
@@ -52,12 +58,12 @@ Map the full vision using [references/output-template.md](references/output-temp
 - Prefer usable behavior. Allow enabling milestones that produce a needed capability. Use a discovery milestone only when a consequential question cannot be answered during implementation. Name the question and the decision it will produce.
 - Size each milestone for one focused decision process, one coherent spec, and ideally one implementation run. Split independent problems hidden under one outcome. Combine fragments that only make sense together. A milestone that does not fit one implementation run can be split into tickets later.
 - Prefer fewer, larger milestones when they stay coherent. Every split adds a seam that someone must integrate and polish.
-- Distinguish required dependencies from preferred order.
+- Distinguish required dependencies from preferred order. Milestone boundaries need not match eventual releases.
 - Mark later scope provisional where earlier work may change it.
 
 ## Handle shared decisions
 
-Resolve implementation choices only when needed for credible milestone boundaries or sequencing. Leave other choices to `follow-the-path`.
+Resolve implementation choices only when needed for credible milestone boundaries or sequencing. Include deployment and transition feasibility when they affect those decisions. Leave other choices to `follow-the-path`.
 
 Assign each shared question to a milestone. Identify dependent milestones and when they need the answer. Record working assumptions and revisit triggers. Carry inherited constraints and unresolved responsibilities into each affected milestone.
 
@@ -67,7 +73,7 @@ Present the draft, then ask one or two focused questions at a time. Recommend an
 
 Update the map as answers arrive. Use common words, consistent terms, and one idea per sentence. Keep discussion and superseded proposals outside the artifact.
 
-Resolve the map when it covers the vision, follows the sizing guidance, and states what works when each milestone is done. Dependencies must have no unresolved cycles. Open questions must have owners and remain answerable before dependent work needs them.
+Resolve the map when it covers the vision, follows the sizing guidance, and states each milestone's finished outcome and verification needs. Dependencies must have no unresolved cycles. Open questions must have owners and remain answerable before dependent work needs them.
 
 No open question may block credible boundaries or sequencing. Later milestones may remain provisional. If interrupted, preserve the draft and identify blockers.
 
@@ -77,4 +83,4 @@ Drafts may be saved to a temporary directory on the user's machine. At resolutio
 
 Save resolved revisions to the supplied map unless the user chooses another destination.
 
-Save using the template. Recommend the next milestone by dependency. Link the vision and include enough context for `follow-the-path` to proceed without the original conversation. Continue downstream only when requested.
+Save using the template. Recommend the next milestone by dependency. Preserve the intent, boundaries, and decisions needed for `follow-the-path` without the conversation. Continue downstream only when requested.

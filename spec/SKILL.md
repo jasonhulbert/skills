@@ -13,7 +13,7 @@ A spec is a brief, not a contract. It carries intent, decisions, and boundaries 
 
 ## Operating Context
 
-Work happens in local development. Do not include deployments, hosted environments, production data, metrics, user research, or rollout plans unless the user asks for them. Verification means what an agent can do locally: run tests, run the app, and use the feature.
+Plan for local development and verification where practical. Do not make deployment of unfinished work a routine implementation dependency. Deployment execution and changes to shared environments require user authorization. Do not require production data, metrics, or user research unless requested.
 
 ## Process
 
@@ -21,23 +21,29 @@ Work happens in local development. Do not include deployments, hosted environmen
 
 Read the vision, map milestone, and decision artifact when they are available. Explore the repo to understand the current state of the codebase, its conventions, and where the work fits, if you haven't already.
 
-Preserve explicit decisions and exclusions. Do not invent user preferences, targets, or settled designs. Note missing context that would change what gets built.
+Preserve explicit decisions and exclusions. Treat local-development instructions as execution limits unless the source explicitly limits the product. Do not invent user preferences, targets, or settled designs. Note missing context that would change what gets built.
 
 ### Step 2: Write the spec
 
-> **Writing Style:** Avoid verbose, overly-dense or jargon-laden text. State a purpose or impact once and allow reasonable interpretation to cover cases. If the reader understands impact or purpose, most cases become derivable. State an idea once, at the depth needed to understand its core premise - no deeper. A second pass over the same point in more detail is a common source of bloat.
+Use plain language. State each idea once at the depth needed to guide implementation. Let clear intent cover derivable cases.
 
-Write the spec using the [template](#spec-template) below. Leave out anything a capable implementer would do anyway or decide well without help. State each fact in one section only.
+Use the [template](#spec-template). Omit what a capable implementer would do or decide without help.
 
-Describe what done looks like as a finished experience, not a list of checks. Plain words such as "polished", "consistent with the rest of the app", or "handles the empty and error cases a user will hit" are useful. Do not expand them into exhaustive criteria.
+Use relative links only to workflow artifacts in the designated workflow directory tree, defaulting to the spec's destination directory. Exclude codebase and outside references, including plain-text paths. Do not widen the boundary or copy sources to bypass it. Resolve links for the final location; omit them while that location is unknown.
 
-Before presenting, ask whether an implementer could follow this spec and still deliver something the user would be disappointed by. If so, close the gap within scope or name the missing decision.
+Retain repository findings as requirements or consequential constraints. Omit code excerpts, file inventories, and research or execution reports. Preserve intent without requiring the conversation; implementers inspect current code independently.
+
+Describe what done looks like as a finished experience in its intended operating conditions. Plain words such as "polished", "consistent with the rest of the app", or "handles the empty and error cases a user will hit" are useful. Do not expand them into exhaustive criteria.
+
+Before presenting, ask whether an implementer could follow this spec and still deliver something the user would be disappointed by. Close gaps within scope or name the missing decision. Distinguish unresolved requirements from checks that can wait until release.
 
 Write to a temporary location on the user's machine and present. Do not wrap the presentation in surrounding prose; present only the spec.
 
 ### Step 3: Revise
 
 Apply the user's feedback. When you disagree with a change, give up to three bullets of rationale and defer to the user.
+
+Replace superseded statements in place. Do not append reports or sections.
 
 ### Step 4: Save
 
@@ -50,7 +56,7 @@ Ask the user if and where they would like the file saved.
 
 ## Goal
 
-[The problem, who it is for, and the intended outcome. Link the vision and decision artifacts when they exist.]
+[Problem, beneficiary, and intended outcome. Link the vision and decisions within the workflow boundary.]
 
 ## What Done Looks Like
 
@@ -62,7 +68,7 @@ Ask the user if and where they would like the file saved.
 
 ## Constraints
 
-- [Only constraints the implementer could not infer from the codebase: required integrations, external contracts, compatibility, data or schema impact, security, or a testing approach the codebase does not make obvious.]
+- [Constraints not evident from the codebase: integrations, contracts, compatibility, data or schema impact, security, deployment or transition requirements, or non-obvious verification needs. Include requirements for work handed off for later execution.]
 
 ## Left to the Implementer
 

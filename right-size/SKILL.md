@@ -17,15 +17,13 @@ A right-sized work item must not depend on a context reset, agent handoff, or su
 
 Splitting has a cost. Every split adds a seam that someone must integrate and polish. Prefer the largest work item that still fits.
 
-Work happens in local development. Verification means what an agent can do locally: run tests, run the app, and use the feature. Do not require deployments, hosted environments, production data, metrics, or user research for verification unless the user asks for them.
-
 ## Establish the assessment boundary
 
-Use the work item and the context already available.
+Use the work item and the context already available. Include operating conditions and consequential deployment or transition constraints in the assessment.
 
 When relevant sources, systems, tools, or workspaces are available, perform only bounded, non-mutating discovery needed to identify the likely working area, dependencies, and verification path. If locating the relevant context requires broad exploration, treat that as sizing evidence.
 
-Do not invent requirements, success criteria, stakeholder intent, substantive design decisions, or access that the work item does not establish. Record reasonable inferences as assumptions.
+Do not invent requirements, success criteria, stakeholder intent, substantive design decisions, or access that the work item does not establish. Record reasonable inferences as assumptions. Do not add deployment execution, production data, metrics, or user research unless requested.
 
 ## Define completion
 
@@ -35,7 +33,7 @@ Identify:
 - The observable completion criteria
 - The expected verification method
 
-If any of these cannot be determined reliably, identify what is missing.
+If any of these cannot be determined reliably, identify what is missing. Intermediate work need not be independently releasable.
 
 ## Check readiness
 
@@ -44,9 +42,9 @@ Evaluate each readiness gate:
 - **Purpose:** Is the intended outcome identifiable?
 - **Completion:** Are observable completion criteria known or safely inferable?
 - **Prerequisites:** Are essential inputs, access, dependencies, approvals, and prior decisions available or established?
-- **Verification:** Is there a feasible local way to verify the completed outcome?
+- **Verification:** Can representative local evidence or authorized services establish correctness and viability?
 
-Fail a gate only when the missing condition prevents reliable sizing or a bounded execution path. Do not fail a gate because normal execution discovery remains.
+Fail a gate only when the missing condition prevents reliable sizing or a bounded execution path. Do not fail a gate because normal execution discovery remains. Deferred release checks need not block sizing when available evidence supports the outcome.
 
 If any readiness gate fails, return `Not ready`. Do not use a context-risk score to override a failed readiness gate.
 

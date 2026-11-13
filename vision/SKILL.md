@@ -50,4 +50,6 @@ When the basis is unsound or inadvisable, say so directly. Raise it before draft
 
 ## Output
 
-Maintaining the coherent high altitude vision is more important than forcing a particular shape of output. Produce a clean vision document when asked. Keep critique and process notes outside the document.
+Preserve a coherent high-level vision over a fixed format. Produce the document when asked. Keep critique, research, and execution notes outside it.
+
+Use relative links only to workflow artifacts in the designated workflow directory tree, defaulting to the vision's destination directory. Exclude codebase and outside references, including plain-text paths. Do not widen the boundary or copy sources to bypass it. Resolve links for the final location; omit them while that location is unknown.
