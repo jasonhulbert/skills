@@ -1,0 +1,5 @@
+interface:
+  display_name: "Cosmic Object"
+  short_description: "Analyze a problem, system, idea, or organization as a layered cosmic sphere."
+policy:
+  allow_implicit_invocation: false
